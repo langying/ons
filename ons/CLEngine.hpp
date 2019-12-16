@@ -11,7 +11,19 @@
 
 #include "CLNsa.hpp"
 #include "CLOns.hpp"
+#include "CLWin.hpp"
 #include "CLVarLink.hpp"
+
+enum ONS_TRANS_MODE {
+    ONS_TRANS_MODE_ALPHA          = 1,
+    ONS_TRANS_MODE_TOPLEFT        = 2,
+    ONS_TRANS_MODE_COPY           = 3,
+    ONS_TRANS_MODE_STRING         = 4,
+    ONS_TRANS_MODE_DIRECT         = 5,
+    ONS_TRANS_MODE_PALLETTE       = 6,
+    ONS_TRANS_MODE_TOPRIGHT       = 7,
+    ONS_TRANS_MODE_MASK           = 8,
+};
 
 class CLTxt {
 public:
@@ -36,14 +48,17 @@ public:
 public:
     void execute();
     void response(int num);
+    void set(const std::string& key, const std::string& val);
     
-protected:
+public:
     CLOns* ons;
+    CLWin* win;
     std::string path;
     std::string code;
     std::vector<CLTxt> txts;
     std::vector<std::string> stack;
     std::map<std::string, CLNsa*> nsas;
+    std::map<std::string, std::string> data;
 };
 
 #endif /* CLEngine_hpp */

@@ -18,7 +18,30 @@ void ons_dump(std::string& func, CLVar* args, void* obj) {
     CLOns* ons = (CLOns*)obj;
     ons->root->trace(">  ");
 }
-
+void ons_caption(CLVar* func, void* data) {
+    CLVar* val = func->getParameter("0");
+    ((CLEngine*)data)->win->caption = val->getString();
+}
+void ons_lookbackcolor(CLVar* func, void* data) {
+    CLVar* val = func->getParameter("0");
+    ((CLEngine*)data)->win->lookbackcolor = val->getInt();
+}
+void ons_menuselectcolor(CLVar* func, void* data) {
+    CLCss& menu = ((CLEngine*)data)->win->menu;
+    menu.color1 = func->getParameter("0")->getInt(); // 正常
+    menu.color2 = func->getParameter("1")->getInt(); // 高光
+    menu.color3 = func->getParameter("2")->getInt(); // 低光
+}
+void ons_menusetwindow(CLVar* func, void* data) {
+    CLCss& menu = ((CLEngine*)data)->win->menu;
+    menu.font.width     = func->getParameter("0")->getInt();
+    menu.font.height    = func->getParameter("1")->getInt();
+    menu.origin.x       = func->getParameter("2")->getInt() + menu.font.width;
+    menu.origin.y       = func->getParameter("3")->getInt() + menu.font.height;
+    menu.bold           = func->getParameter("4")->getInt() ? true : false;
+    menu.shadow         = func->getParameter("5")->getInt() ? true : false;
+    menu.bgColor        = func->getParameter("6")->getInt();
+}
 void ons_nsa(CLVar* func, void* data) {
     CLEngine* engine = (CLEngine*)data;
     vector<string> list;
@@ -27,6 +50,42 @@ void ons_nsa(CLVar* func, void* data) {
         engine->loadNsa(name);
     }
 }
+void ons_rmenu(CLVar* func, void* data) {
+    CLWin* win = ((CLEngine*)data)->win;
+    int argc = func->getParameter("argc")->getInt();
+    for (int i = 0; i < argc; i++) {
+        CLVar* val = func->getParameter(to_string(i));
+        win->rmenu.push_back(val->getString());
+    }
+}
+void ons_savename(CLVar* func, void* data) {
+     CLWin* win = ((CLEngine*)data)->win;
+     int argc = func->getParameter("argc")->getInt();
+     for (int i = 0; i < argc; i++) {
+         CLVar* val = func->getParameter(to_string(i));
+         win->savename.push_back(val->getString());
+     }
+}
+void ons_savenumber(CLVar* func, void* data) {
+    CLVar* val = func->getParameter("0");
+    ((CLEngine*)data)->win->savenumber = val->getInt();
+}
+void ons_selectcolor(CLVar* func, void* data) {
+    CLCss& label = ((CLEngine*)data)->win->label;
+    label.color1 = func->getParameter("0")->getInt();
+    label.color2 = func->getParameter("1")->getInt();
+}
+void ons_transmode(CLVar* func, void* data) {
+    CLVar* val = func->getParameter("0");
+    ((CLEngine*)data)->win->transmode = val->getString();
+}
+void ons_versionstr(CLVar* func, void* data) {
+    CLVar* v1 = func->getParameter("0");
+    CLVar* v2 = func->getParameter("1");
+    ((CLEngine*)data)->win->version1 = v1->getString();
+    ((CLEngine*)data)->win->version2 = v2->getString();
+}
+
 
 CLEngine::~CLEngine() {
     if (ons) {
@@ -40,6 +99,7 @@ CLEngine::~CLEngine() {
 
 CLEngine::CLEngine() {
     ons = NULL;
+    win = new CLWin();
 }
 
 void CLEngine::load(const char* _path) {
@@ -58,7 +118,17 @@ void CLEngine::load(const char* _path) {
     }
     
     ons = new CLOns(code);
-    ons->addFunction("nsa", ons_nsa, this);
+    ons->addFunction("caption",         ons_caption,            this);
+    ons->addFunction("lookbackcolor",   ons_lookbackcolor,      this);
+    ons->addFunction("menuselectcolor", ons_menuselectcolor,    this);
+    ons->addFunction("menusetwindow",   ons_menusetwindow,      this);
+    ons->addFunction("rmenu",           ons_rmenu,              this);
+    ons->addFunction("savename",        ons_savename,           this);
+    ons->addFunction("savenumber",      ons_savenumber,         this);
+    ons->addFunction("selectcolor",     ons_selectcolor,        this);
+    ons->addFunction("transmode",       ons_transmode,          this);
+    ons->addFunction("nsa",             ons_nsa,                this);
+    ons->addFunction("versionstr",      ons_versionstr,         this);
     ons->jump("*define");
 }
 
@@ -81,6 +151,10 @@ void CLEngine::execute() {
 
 void CLEngine::response(int num) {
     ons->response(num);
+}
+
+void CLEngine::set(const std::string& key, const std::string& val) {
+    data[key]=val;
 }
 
 void CLEngine::getPathFiles(vector<string>& list, const string& ext1, const string& ext2) {

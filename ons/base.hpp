@@ -206,6 +206,14 @@ public:
     CLException(const std::string &msg) { this->msg = msg; }
 };
 
+typedef int32_t CLColor;
+typedef struct _CLPoint {
+    int x, y;
+} CLPoint;
+typedef struct _CLSize {
+    int width, height;
+} CLSize;
+
 typedef void (*CLCallback)(CLVar* func, void* data);
 
 

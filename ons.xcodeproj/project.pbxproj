@@ -15,6 +15,8 @@
 		D4F3BC44239F9D970019ED43 /* CLEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F3BC39239F9D960019ED43 /* CLEngine.cpp */; };
 		D4F3BC45239F9D970019ED43 /* base.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F3BC3D239F9D970019ED43 /* base.cpp */; };
 		D4F3BC46239F9D970019ED43 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F3BC3E239F9D970019ED43 /* main.cpp */; };
+		D4F87F8D23A239D900388898 /* CLCss.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F87F8B23A239D900388898 /* CLCss.cpp */; };
+		D4F87F9023A728FA00388898 /* CLWin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F87F8E23A728FA00388898 /* CLWin.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -46,6 +48,10 @@
 		D4F3BC3C239F9D960019ED43 /* base.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = base.hpp; sourceTree = "<group>"; };
 		D4F3BC3D239F9D970019ED43 /* base.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = base.cpp; sourceTree = "<group>"; };
 		D4F3BC3E239F9D970019ED43 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		D4F87F8B23A239D900388898 /* CLCss.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CLCss.cpp; sourceTree = "<group>"; };
+		D4F87F8C23A239D900388898 /* CLCss.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CLCss.hpp; sourceTree = "<group>"; };
+		D4F87F8E23A728FA00388898 /* CLWin.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CLWin.cpp; sourceTree = "<group>"; };
+		D4F87F8F23A728FA00388898 /* CLWin.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CLWin.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,20 +85,24 @@
 			isa = PBXGroup;
 			children = (
 				D4F3BC3E239F9D970019ED43 /* main.cpp */,
-				D4F3BC3D239F9D970019ED43 /* base.cpp */,
 				D4F3BC3C239F9D960019ED43 /* base.hpp */,
-				D4F3BC39239F9D960019ED43 /* CLEngine.cpp */,
+				D4F3BC3D239F9D970019ED43 /* base.cpp */,
 				D4F3BC3B239F9D960019ED43 /* CLEngine.hpp */,
-				D4F3BC35239F9D960019ED43 /* CLLex.cpp */,
+				D4F3BC39239F9D960019ED43 /* CLEngine.cpp */,
+				D4F87F8C23A239D900388898 /* CLCss.hpp */,
+				D4F87F8B23A239D900388898 /* CLCss.cpp */,
+				D4F87F8F23A728FA00388898 /* CLWin.hpp */,
+				D4F87F8E23A728FA00388898 /* CLWin.cpp */,
 				D4F3BC33239F9D960019ED43 /* CLLex.hpp */,
-				D4F3BC37239F9D960019ED43 /* CLNsa.cpp */,
+				D4F3BC35239F9D960019ED43 /* CLLex.cpp */,
 				D4F3BC34239F9D960019ED43 /* CLNsa.hpp */,
-				D4F3BC32239F9D960019ED43 /* CLOns.cpp */,
+				D4F3BC37239F9D960019ED43 /* CLNsa.cpp */,
 				D4F3BC30239F9D960019ED43 /* CLOns.hpp */,
-				D4F3BC31239F9D960019ED43 /* CLVar.cpp */,
+				D4F3BC32239F9D960019ED43 /* CLOns.cpp */,
 				D4F3BC36239F9D960019ED43 /* CLVar.hpp */,
-				D4F3BC38239F9D960019ED43 /* CLVarLink.cpp */,
+				D4F3BC31239F9D960019ED43 /* CLVar.cpp */,
 				D4F3BC3A239F9D960019ED43 /* CLVarLink.hpp */,
+				D4F3BC38239F9D960019ED43 /* CLVarLink.cpp */,
 			);
 			path = ons;
 			sourceTree = "<group>";
@@ -155,10 +165,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				D4F3BC43239F9D970019ED43 /* CLVarLink.cpp in Sources */,
+				D4F87F9023A728FA00388898 /* CLWin.cpp in Sources */,
 				D4F3BC3F239F9D970019ED43 /* CLVar.cpp in Sources */,
 				D4F3BC46239F9D970019ED43 /* main.cpp in Sources */,
 				D4F3BC42239F9D970019ED43 /* CLNsa.cpp in Sources */,
 				D4F3BC45239F9D970019ED43 /* base.cpp in Sources */,
+				D4F87F8D23A239D900388898 /* CLCss.cpp in Sources */,
 				D4F3BC41239F9D970019ED43 /* CLLex.cpp in Sources */,
 				D4F3BC44239F9D970019ED43 /* CLEngine.cpp in Sources */,
 				D4F3BC40239F9D970019ED43 /* CLOns.cpp in Sources */,
