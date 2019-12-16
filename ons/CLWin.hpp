@@ -11,6 +11,14 @@
 
 #include "base.hpp"
 #include "CLCss.hpp"
+#include "CLImg.hpp"
+
+typedef struct _CLEffect {
+    int id;
+    int effect;
+    int duration;
+    std::string image;
+} CLEffect;
 
 class CLWin {
 public:
@@ -26,6 +34,11 @@ public:
     bool labellog;      // 标签跟踪记录
     bool windowback;    // 使立绘和文字属于同一蒙层
     
+    CLCss menu;
+    CLCss label;
+    
+    std::string bg;     // 背景图片
+    std::string bgm;    // 背景音乐
     std::string kidoku; // 初次阅读，禁止跳过
     std::string caption;
     std::string textgosub;
@@ -33,9 +46,13 @@ public:
     std::string versionstr[2];
     std::vector<std::string> rmenu;
     std::vector<std::string> savename;
+    std::map<int, CLImg> imgs;
+    std::map<int, CLEffect> effects;
+
     
-    CLCss menu;
-    CLCss label;
+public:
+    void lsp(CLImg& img);
+    void spbtn(int id, int val);
 };
 
 #endif /* CLWin_hpp */

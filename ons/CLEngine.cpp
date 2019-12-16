@@ -26,9 +26,37 @@ void ons_automode_time(CLVar* func, void* data) {
     CLVar* val = func->getParameter("0");
     ((CLEngine*)data)->win->automode_time = val->getInt();
 }
+void ons_bg(CLVar* func, void* data) {
+    CLVar* val = func->getParameter("0");
+    ((CLEngine*)data)->win->bg = val->getString();
+}
+void ons_bgm(CLVar* func, void* data) {
+    CLVar* val = func->getParameter("0");
+    ((CLEngine*)data)->win->bgm = val->getString();
+}
+void ons_btnwait(CLVar* func, void* data) {
+    int num = 0;
+    ((CLEngine*)data)->ons->request(num);
+    func->getParameter("0")->setInt(num);
+    std::cout << func->getString() << "(" << num <<");\n";
+}
+void ons_btnwait2(CLVar* func, void* data) {
+    ons_btnwait(func, data);
+}
 void ons_caption(CLVar* func, void* data) {
     CLVar* val = func->getParameter("0");
     ((CLEngine*)data)->win->caption = val->getString();
+}
+void ons_effect(CLVar* func, void* data) {
+    CLEffect eff;
+    eff.id       = func->getParameter("0")->getInt();
+    eff.effect   = func->getParameter("1")->getInt();
+    eff.duration = func->getParameter("2")->getInt();
+    int argc = func->getParameter(ONS_ARGC)->getInt();
+    if (argc > 3) {
+        eff.image = func->getParameter("3")->getString();
+    }
+    ((CLEngine*)data)->win->effects[eff.id] = eff;
 }
 void ons_effectblank(CLVar* func, void* data) {
     CLVar* val = func->getParameter("0");
@@ -36,6 +64,9 @@ void ons_effectblank(CLVar* func, void* data) {
 }
 void ons_filelog(CLVar* func, void* data) {
     ((CLEngine*)data)->win->filelog = true;
+}
+void ons_game(CLVar* func, void* data) {
+    ((CLEngine*)data)->ons->jump("*start");
 }
 void ons_globalon(CLVar* func, void* data) {
     ((CLEngine*)data)->win->globalon = true;
@@ -54,6 +85,17 @@ void ons_labellog(CLVar* func, void* data) {
 void ons_lookbackcolor(CLVar* func, void* data) {
     CLVar* val = func->getParameter("0");
     ((CLEngine*)data)->win->lookbackcolor = val->getInt();
+}
+void ons_lsp(CLVar* func, void* data) {
+    CLImg img;
+    img.id   = func->getParameter("0")->getInt();
+    img.data = func->getParameter("1")->getString();
+    img.origin.x = func->getParameter("2")->getInt();
+    img.origin.y = func->getParameter("3")->getInt();
+    if (func->getParameter(ONS_ARGC)->getInt() > 4) {
+        img.a = func->getParameter("4")->getInt();
+    }
+    ((CLEngine*)data)->win->lsp(img);
 }
 void ons_menuselectcolor(CLVar* func, void* data) {
     CLCss& menu = ((CLEngine*)data)->win->menu;
@@ -79,9 +121,19 @@ void ons_nsa(CLVar* func, void* data) {
         engine->loadNsa(name);
     }
 }
+void ons_print(CLVar* func, void* data) {
+    int argc = func->getParameter(ONS_ARGC)->getInt();
+    if (argc < 2) {
+        ((CLEngine*)data)->print(0, 0);
+    } else {
+        int anim = func->getParameter("0")->getInt();
+        int time = func->getParameter("1")->getInt();
+        ((CLEngine*)data)->print(anim, time);
+    }
+}
 void ons_rmenu(CLVar* func, void* data) {
     CLWin* win = ((CLEngine*)data)->win;
-    int argc = func->getParameter("argc")->getInt();
+    int argc = func->getParameter(ONS_ARGC)->getInt();
     for (int i = 0; i < argc; i++) {
         CLVar* val = func->getParameter(to_string(i));
         win->rmenu.push_back(val->getString());
@@ -89,7 +141,7 @@ void ons_rmenu(CLVar* func, void* data) {
 }
 void ons_savename(CLVar* func, void* data) {
      CLWin* win = ((CLEngine*)data)->win;
-     int argc = func->getParameter("argc")->getInt();
+     int argc = func->getParameter(ONS_ARGC)->getInt();
      for (int i = 0; i < argc; i++) {
          CLVar* val = func->getParameter(to_string(i));
          win->savename.push_back(val->getString());
@@ -103,6 +155,11 @@ void ons_selectcolor(CLVar* func, void* data) {
     CLCss& label = ((CLEngine*)data)->win->label;
     label.color1 = func->getParameter("0")->getInt();
     label.color2 = func->getParameter("1")->getInt();
+}
+void ons_spbtn(CLVar* func, void* data) {
+    int id = func->getParameter("0")->getInt();
+    int vv = func->getParameter("1")->getInt();
+    ((CLEngine*)data)->win->spbtn(id, vv);
 }
 void ons_textgosub(CLVar* func, void* data) {
     CLVar* val = func->getParameter("0");
@@ -119,6 +176,9 @@ void ons_versionstr(CLVar* func, void* data) {
     win->versionstr[0] = v1->getString();
     win->versionstr[1] = v2->getString();
 }
+void ons_wait(CLVar* func, void* data) {
+}
+
 void ons_windowback(CLVar* func, void* data) {
     ((CLEngine*)data)->win->windowback = true;
 }
@@ -160,24 +220,34 @@ void CLEngine::load(const char* _path) {
     ons = new CLOns(code);
     ons->addFunction("automode",        ons_automode,           this);
     ons->addFunction("automode_time",   ons_automode_time,      this);
+    ons->addFunction("bg",              ons_bg,                 this);
+    ons->addFunction("bgm",             ons_bgm,                this);
+    ons->addFunction("btnwait",         ons_btnwait,            this);
+    ons->addFunction("btnwait2",        ons_btnwait2,           this);
     ons->addFunction("caption",         ons_caption,            this);
+    ons->addFunction("effect",          ons_effect,             this);
     ons->addFunction("effectblank",     ons_effectblank,        this);
     ons->addFunction("filelog",         ons_filelog,            this);
+    ons->addFunction("game",            ons_game,               this);
     ons->addFunction("globalon",        ons_globalon,           this);
     ons->addFunction("humanz",          ons_humanz,             this);
     ons->addFunction("kidokuskip",      ons_kidokuskip,         this);
     ons->addFunction("labellog",        ons_labellog,           this);
     ons->addFunction("lookbackcolor",   ons_lookbackcolor,      this);
+    ons->addFunction("lsp",             ons_lsp,                this);
     ons->addFunction("menuselectcolor", ons_menuselectcolor,    this);
     ons->addFunction("menusetwindow",   ons_menusetwindow,      this);
+    ons->addFunction("print",           ons_print,              this);
     ons->addFunction("rmenu",           ons_rmenu,              this);
     ons->addFunction("savename",        ons_savename,           this);
     ons->addFunction("savenumber",      ons_savenumber,         this);
     ons->addFunction("selectcolor",     ons_selectcolor,        this);
+    ons->addFunction("spbtn",           ons_spbtn,              this);
     ons->addFunction("textgosub",       ons_textgosub,          this);
     ons->addFunction("transmode",       ons_transmode,          this);
     ons->addFunction("nsa",             ons_nsa,                this);
     ons->addFunction("versionstr",      ons_versionstr,         this);
+    ons->addFunction("wait",            ons_wait,               this);
     ons->addFunction("windowback",      ons_windowback,         this);
     ons->jump("*define");
 }
@@ -205,6 +275,10 @@ void CLEngine::response(int num) {
 
 void CLEngine::set(const std::string& key, const std::string& val) {
     data[key]=val;
+}
+
+void CLEngine::print(int anim, int time) {
+    
 }
 
 void CLEngine::getPathFiles(vector<string>& list, const string& ext1, const string& ext2) {

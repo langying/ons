@@ -7,3 +7,12 @@
 //
 
 #include "CLWin.hpp"
+
+void CLWin::lsp(CLImg &img) {
+    imgs[img.id] = img;
+}
+
+void CLWin::spbtn(int id, int val) {
+    imgs[id].v = val;
+}
+

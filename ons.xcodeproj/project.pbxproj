@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D4D3A26A23A772420076FEE2 /* CLImg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4D3A26823A772420076FEE2 /* CLImg.cpp */; };
 		D4F3BC3F239F9D970019ED43 /* CLVar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F3BC31239F9D960019ED43 /* CLVar.cpp */; };
 		D4F3BC40239F9D970019ED43 /* CLOns.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F3BC32239F9D960019ED43 /* CLOns.cpp */; };
 		D4F3BC41239F9D970019ED43 /* CLLex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F3BC35239F9D960019ED43 /* CLLex.cpp */; };
@@ -32,6 +33,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D4D3A26823A772420076FEE2 /* CLImg.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CLImg.cpp; sourceTree = "<group>"; };
+		D4D3A26923A772420076FEE2 /* CLImg.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CLImg.hpp; sourceTree = "<group>"; };
 		D4F3BC26239F9D4A0019ED43 /* ons */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ons; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4F3BC30239F9D960019ED43 /* CLOns.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CLOns.hpp; sourceTree = "<group>"; };
 		D4F3BC31239F9D960019ED43 /* CLVar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CLVar.cpp; sourceTree = "<group>"; };
@@ -89,6 +92,8 @@
 				D4F3BC3D239F9D970019ED43 /* base.cpp */,
 				D4F3BC3B239F9D960019ED43 /* CLEngine.hpp */,
 				D4F3BC39239F9D960019ED43 /* CLEngine.cpp */,
+				D4D3A26923A772420076FEE2 /* CLImg.hpp */,
+				D4D3A26823A772420076FEE2 /* CLImg.cpp */,
 				D4F87F8C23A239D900388898 /* CLCss.hpp */,
 				D4F87F8B23A239D900388898 /* CLCss.cpp */,
 				D4F87F8F23A728FA00388898 /* CLWin.hpp */,
@@ -173,6 +178,7 @@
 				D4F87F8D23A239D900388898 /* CLCss.cpp in Sources */,
 				D4F3BC41239F9D970019ED43 /* CLLex.cpp in Sources */,
 				D4F3BC44239F9D970019ED43 /* CLEngine.cpp in Sources */,
+				D4D3A26A23A772420076FEE2 /* CLImg.cpp in Sources */,
 				D4F3BC40239F9D970019ED43 /* CLOns.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

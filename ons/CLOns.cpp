@@ -41,27 +41,9 @@ void ons_undefined(CLVar* func, void* data) {
     }
     std::cout << ");\n";
 }
-void lex_btnwait(CLVar* func, void* data) {
-    int num = 0;
-    ((CLOns*)data)->request(num);
-    func->getParameter("0")->setInt(num);
-    std::cout << func->getString() << "(" << num <<");\n";
-}
-void lex_btnwait2(CLVar* func, void* data) {
-    lex_btnwait(func, data);
-}
 void ons_dialog(string text, void* data) {
     std::cout << text << "\n\n";
 //    this_thread::sleep_for(chrono::milliseconds(100));
-}
-void ons_lsp(CLVar* func, void* data) {
-    ons_undefined(func, data);
-}
-void lex_rmenu(CLVar* func, void* data) {
-    ons_undefined(func, data);
-}
-void lex_systemcall(CLVar* func, void* data) {
-    ons_undefined(func, data);
 }
 
 /* ----------------------------------------MATH-------------------------------------------- */
@@ -96,7 +78,6 @@ void math_div(CLVar* func, void* data) {
 void math_inc(CLVar* func, void* data) {
     CLVar* a = func->getParameter("0");
     a->setInt(a->getInt() + 1);
-    std::cout << func->getString() << "();\n";
 }
 void math_itoa(CLVar* func, void* data) {
     CLVar* a = func->getParameter("0");
@@ -186,10 +167,6 @@ CLOns::CLOns(const string& code) {
     addFunction("mov",      math_mov,       this);
     addFunction("mul",      math_mul,       this);
     addFunction("sub",      math_sub,       this);
-
-    addFunction("btnwait",      lex_btnwait,    this);
-    addFunction("btnwait2",     lex_btnwait2,   this);
-    addFunction("systemcall",   lex_systemcall, this);
 }
 
 void CLOns::back() {

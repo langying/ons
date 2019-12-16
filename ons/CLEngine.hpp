@@ -45,10 +45,12 @@ public:
     void loadTxt(const std::string& name, const std::string& text);
     void getPathFiles(std::vector<std::string>& list, const std::string& ext1, const std::string& ext2);
 
-public:
     void execute();
     void response(int num);
     void set(const std::string& key, const std::string& val);
+    
+public:
+    void print(int anim, int time);
     
 public:
     CLOns* ons;
@@ -57,6 +59,8 @@ public:
     std::string code;
     std::vector<CLTxt> txts;
     std::vector<std::string> stack;
+    
+    std::map<int, CLImg> imgs;
     std::map<std::string, CLNsa*> nsas;
     std::map<std::string, std::string> data;
 };
