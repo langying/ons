@@ -133,7 +133,7 @@
 		D4F3BC1E239F9D4A0019ED43 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1120;
+				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = "韩琼";
 				TargetAttributes = {
 					D4F3BC25239F9D4A0019ED43 = {
@@ -292,6 +292,7 @@
 		D4F3BC2E239F9D4A0019ED43 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DAZ5DSXDRC;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -302,6 +303,7 @@
 		D4F3BC2F239F9D4A0019ED43 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DAZ5DSXDRC;
 				ENABLE_HARDENED_RUNTIME = YES;

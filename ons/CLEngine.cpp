@@ -18,9 +18,38 @@ void ons_dump(std::string& func, CLVar* args, void* obj) {
     CLOns* ons = (CLOns*)obj;
     ons->root->trace(">  ");
 }
+
+void ons_automode(CLVar* func, void* data) {
+    ((CLEngine*)data)->win->automode = true;
+}
+void ons_automode_time(CLVar* func, void* data) {
+    CLVar* val = func->getParameter("0");
+    ((CLEngine*)data)->win->automode_time = val->getInt();
+}
 void ons_caption(CLVar* func, void* data) {
     CLVar* val = func->getParameter("0");
     ((CLEngine*)data)->win->caption = val->getString();
+}
+void ons_effectblank(CLVar* func, void* data) {
+    CLVar* val = func->getParameter("0");
+    ((CLEngine*)data)->win->effectblank = val->getInt();
+}
+void ons_filelog(CLVar* func, void* data) {
+    ((CLEngine*)data)->win->filelog = true;
+}
+void ons_globalon(CLVar* func, void* data) {
+    ((CLEngine*)data)->win->globalon = true;
+}
+void ons_humanz(CLVar* func, void* data) {
+    CLVar* val = func->getParameter("0");
+    ((CLEngine*)data)->win->humanz = val->getInt();
+}
+void ons_kidokuskip(CLVar* func, void* data) {
+    // !TODO: 初次阅读的判断，禁止跳过
+    // ((CLEngine*)data)->win->kidoku;
+}
+void ons_labellog(CLVar* func, void* data) {
+    ((CLEngine*)data)->win->labellog = true;
 }
 void ons_lookbackcolor(CLVar* func, void* data) {
     CLVar* val = func->getParameter("0");
@@ -75,6 +104,10 @@ void ons_selectcolor(CLVar* func, void* data) {
     label.color1 = func->getParameter("0")->getInt();
     label.color2 = func->getParameter("1")->getInt();
 }
+void ons_textgosub(CLVar* func, void* data) {
+    CLVar* val = func->getParameter("0");
+    ((CLEngine*)data)->win->textgosub = val->getString();
+}
 void ons_transmode(CLVar* func, void* data) {
     CLVar* val = func->getParameter("0");
     ((CLEngine*)data)->win->transmode = val->getString();
@@ -82,14 +115,21 @@ void ons_transmode(CLVar* func, void* data) {
 void ons_versionstr(CLVar* func, void* data) {
     CLVar* v1 = func->getParameter("0");
     CLVar* v2 = func->getParameter("1");
-    ((CLEngine*)data)->win->version1 = v1->getString();
-    ((CLEngine*)data)->win->version2 = v2->getString();
+    CLWin* win = ((CLEngine*)data)->win;
+    win->versionstr[0] = v1->getString();
+    win->versionstr[1] = v2->getString();
+}
+void ons_windowback(CLVar* func, void* data) {
+    ((CLEngine*)data)->win->windowback = true;
 }
 
 
 CLEngine::~CLEngine() {
     if (ons) {
         delete ons;
+    }
+    if (win) {
+        delete win;
     }
     for (auto it : nsas) {
         delete it.second;
@@ -118,7 +158,15 @@ void CLEngine::load(const char* _path) {
     }
     
     ons = new CLOns(code);
+    ons->addFunction("automode",        ons_automode,           this);
+    ons->addFunction("automode_time",   ons_automode_time,      this);
     ons->addFunction("caption",         ons_caption,            this);
+    ons->addFunction("effectblank",     ons_effectblank,        this);
+    ons->addFunction("filelog",         ons_filelog,            this);
+    ons->addFunction("globalon",        ons_globalon,           this);
+    ons->addFunction("humanz",          ons_humanz,             this);
+    ons->addFunction("kidokuskip",      ons_kidokuskip,         this);
+    ons->addFunction("labellog",        ons_labellog,           this);
     ons->addFunction("lookbackcolor",   ons_lookbackcolor,      this);
     ons->addFunction("menuselectcolor", ons_menuselectcolor,    this);
     ons->addFunction("menusetwindow",   ons_menusetwindow,      this);
@@ -126,9 +174,11 @@ void CLEngine::load(const char* _path) {
     ons->addFunction("savename",        ons_savename,           this);
     ons->addFunction("savenumber",      ons_savenumber,         this);
     ons->addFunction("selectcolor",     ons_selectcolor,        this);
+    ons->addFunction("textgosub",       ons_textgosub,          this);
     ons->addFunction("transmode",       ons_transmode,          this);
     ons->addFunction("nsa",             ons_nsa,                this);
     ons->addFunction("versionstr",      ons_versionstr,         this);
+    ons->addFunction("windowback",      ons_windowback,         this);
     ons->jump("*define");
 }
 
@@ -177,3 +227,4 @@ void CLEngine::getPathFiles(vector<string>& list, const string& ext1, const stri
     closedir(dir);
     sort(list.begin(), list.end());
 }
+
