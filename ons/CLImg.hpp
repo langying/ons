@@ -27,4 +27,11 @@ public:
     CLAnim anim;
 };
 
+class CLOgg {
+public:
+    int id;
+    int status;
+    std::string file;
+};
+
 #endif /* CLImg_hpp */

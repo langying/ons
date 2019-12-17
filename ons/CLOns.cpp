@@ -42,7 +42,7 @@ void ons_undefined(CLVar* func, void* data) {
     std::cout << ");\n";
 }
 void ons_dialog(string text, void* data) {
-    std::cout << text << "\n\n";
+    std::cout << text << "\n";
 //    this_thread::sleep_for(chrono::milliseconds(100));
 }
 
@@ -56,7 +56,6 @@ void math_add(CLVar* func, void* data) {
     else {
         a->setString(a->getString() + b->getString());
     }
-    std::cout << func->getString() << "();\n";
 }
 void math_atoi(CLVar* func, void* data) {
     CLVar* a = func->getParameter("0");
@@ -112,7 +111,6 @@ void math_mov(CLVar* func, void* data) {
     CLVar* a = func->getParameter("0");
     CLVar* b = func->getParameter("1");
     a->copyValue(b);
-    std::cout << func->getString() << "();\n";
 }
 void math_mul(CLVar* func, void* data) {
     CLVar* a = func->getParameter("0");

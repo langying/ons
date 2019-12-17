@@ -22,6 +22,7 @@ typedef struct _CLEffect {
 
 class CLWin {
 public:
+    int rmode; // 0右键点击无效，1右键点击有效
     int humanz; // 人物立绘的z-order
     int savenumber;
     int effectblank;
@@ -36,9 +37,9 @@ public:
     
     CLCss menu;
     CLCss label;
+    CLOgg bgm;    // 背景音乐
     
     std::string bg;     // 背景图片
-    std::string bgm;    // 背景音乐
     std::string kidoku; // 初次阅读，禁止跳过
     std::string caption;
     std::string textgosub;
@@ -46,12 +47,19 @@ public:
     std::string versionstr[2];
     std::vector<std::string> rmenu;
     std::vector<std::string> savename;
+    
     std::map<int, CLImg> imgs;
+    std::map<int, CLOgg> oggs;
     std::map<int, CLEffect> effects;
 
     
 public:
+    void csp(int id);
     void lsp(CLImg& img);
+    void bgmstop();
+    void dwave(CLOgg& ogg);
+    void dwavestop(int id);
+    void dwaveloop(CLOgg& ogg);
     void spbtn(int id, int val);
 };
 
