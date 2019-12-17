@@ -23,7 +23,7 @@ void ons_undefined(CLVar* func, void* data) {
         std::string val = func->getParameter(to_string(i))->getString();
         if (val[0]==':' && val[1]=='s') {
             size_t p = val.find(';');
-            size_t idx = p==string::npos ? 3 : p+1;
+            size_t idx = (p==string::npos) ? 3 : p+1;
             CLLex l(val.substr(idx));
             while (l.tk &&l.tk!=LEX_ID) {
                 l.match(l.tk);
@@ -72,7 +72,6 @@ void math_div(CLVar* func, void* data) {
     CLVar* a = func->getParameter("0");
     CLVar* b = func->getParameter("1");
     a->setInt(a->getInt() / b->getInt());
-    std::cout << func->getString() << "();\n";
 }
 void math_inc(CLVar* func, void* data) {
     CLVar* a = func->getParameter("0");
@@ -91,7 +90,6 @@ void math_len(CLVar* func, void* data) {
     CLVar* a = func->getParameter("0");
     CLVar* b = func->getParameter("1");
     a->setInt((int)b->getString().length());
-    std::cout << func->getString() << "();\n";
 }
 void math_mid(CLVar* func, void* data) {
     CLVar* dst = func->getParameter("0");

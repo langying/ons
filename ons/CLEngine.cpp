@@ -39,7 +39,7 @@ void ons_bgmstop(CLVar* func, void* data) {
     ((CLEngine*)data)->win->bgm.status = val->getInt();
 }
 void ons_btnwait(CLVar* func, void* data) {
-    std::cout << ">>>>>: ";
+    std::cout << "btnwait: ";
     int num = 0;
     ((CLEngine*)data)->ons->request(num);
     func->getParameter("0")->setInt(num);
@@ -91,11 +91,31 @@ void ons_effectblank(CLVar* func, void* data) {
     CLVar* val = func->getParameter("0");
     ((CLEngine*)data)->win->effectblank = val->getInt();
 }
+void ons_erasetextwindow(CLVar* func, void* data) {
+    CLVar* val = func->getParameter("0");
+    ((CLEngine*)data)->win->erasetextwindow(val->getInt());
+}
 void ons_filelog(CLVar* func, void* data) {
     ((CLEngine*)data)->win->filelog = true;
 }
 void ons_game(CLVar* func, void* data) {
     ((CLEngine*)data)->ons->jump("*start");
+}
+void ons_getspmode(CLVar* func, void* data) {
+    int spid = func->getParameter("1")->getInt();
+    CLImg img = ((CLEngine*)data)->imgs[spid];
+    func->getParameter("0")->setInt(img.hidden?0:1);
+}
+void ons_getspsize(CLVar* func, void* data) {
+    int argc = func->getParameter(ONS_ARGC)->getInt();
+    int spid = func->getParameter("0")->getInt();
+    
+    CLImg img = ((CLEngine*)data)->imgs[spid];
+    func->getParameter("1")->setInt(img.w);
+    func->getParameter("2")->setInt(img.h);
+    if (argc > 3) {
+        func->getParameter("3")->setInt(img.n); // !TODO: 看不懂
+    }
 }
 void ons_globalon(CLVar* func, void* data) {
     ((CLEngine*)data)->win->globalon = true;
@@ -118,7 +138,7 @@ void ons_lookbackcolor(CLVar* func, void* data) {
 void ons_lsp(CLVar* func, void* data) {
     CLImg img;
     img.id   = func->getParameter("0")->getInt();
-    img.data = func->getParameter("1")->getString();
+    img.setData(func->getParameter("1")->getString(), ((CLEngine*)data)->ons);
     img.origin.x = func->getParameter("2")->getInt();
     img.origin.y = func->getParameter("3")->getInt();
     if (func->getParameter(ONS_ARGC)->getInt() > 4) {
@@ -266,8 +286,11 @@ void CLEngine::load(const char* _path) {
     ons->addFunction("dwaveloop",       ons_dwaveloop,          this);
     ons->addFunction("effect",          ons_effect,             this);
     ons->addFunction("effectblank",     ons_effectblank,        this);
+    ons->addFunction("erasetextwindow", ons_erasetextwindow,    this);
     ons->addFunction("filelog",         ons_filelog,            this);
     ons->addFunction("game",            ons_game,               this);
+    ons->addFunction("getspmode",       ons_getspmode,          this);
+    ons->addFunction("getspsize",       ons_getspsize,          this);
     ons->addFunction("globalon",        ons_globalon,           this);
     ons->addFunction("humanz",          ons_humanz,             this);
     ons->addFunction("kidokuskip",      ons_kidokuskip,         this);

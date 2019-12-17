@@ -48,6 +48,10 @@ void CLWin::dwaveloop(CLOgg& ogg) {
     oggs[ogg.id] = ogg;
 }
 
+void CLWin::erasetextwindow(int id) {
+    
+}
+
 void CLWin::spbtn(int id, int val) {
     imgs[id].v = val;
     cout << val << imgs[id].data << endl;

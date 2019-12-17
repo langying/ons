@@ -9,7 +9,7 @@
 #ifndef CLImg_hpp
 #define CLImg_hpp
 
-#include "base.hpp"
+#include "CLOns.hpp"
 
 typedef struct _CLAnim {
     int anim;
@@ -19,12 +19,17 @@ typedef struct _CLAnim {
 class CLImg {
 public:
     int id;
+    int w;
+    int h;
     int a;
-    CLPoint origin;
-    
+    int n; // num of cells
     int v; // 点击返回值
+    bool hidden;
     std::string data;
     CLAnim anim;
+    CLPoint origin;
+    
+    void setData(const std::string& val, CLOns* ons);
 };
 
 class CLOgg {

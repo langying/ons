@@ -60,6 +60,7 @@ public:
     void dwave(CLOgg& ogg);
     void dwavestop(int id);
     void dwaveloop(CLOgg& ogg);
+    void erasetextwindow(int id);
     void spbtn(int id, int val);
 };
 
