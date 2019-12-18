@@ -56,7 +56,9 @@ public:
     
 public:
     CLWin(CLOns* ons);
+    void br();
     void csp(int id);
+    void csp2(int id);
     void lsp(int id, std::string ss, int px, int py, int aa);
     void lsp2(int id, std::string ss, int px, int py, int sx, int sy, int rr, int aa);
     void bgmstop();

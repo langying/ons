@@ -40,6 +40,7 @@ public:
     ~CLEngine();
     CLEngine();
     
+    void reset();
     void load(const char* path);
     void loadNsa(const std::string& name);
     void loadTxt(const std::string& name, const std::string& text);

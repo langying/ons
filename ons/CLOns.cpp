@@ -42,7 +42,7 @@ void ons_undefined(CLVar* func, void* data) {
     std::cout << ");\n";
 }
 void ons_dialog(string text, void* data) {
-    std::cout << text << "\n";
+//    std::cout << text << "\n";
 //    this_thread::sleep_for(chrono::milliseconds(100));
 }
 
@@ -173,6 +173,7 @@ void CLOns::back() {
     CLVar* thiz = scopes.back();
     delete thiz;
     scopes.pop_back();
+    cout << "return" << endl;
 }
 
 void CLOns::jump(const std::string &label) {
@@ -181,6 +182,7 @@ void CLOns::jump(const std::string &label) {
         throw new CLException("");
     }
     l->reset(it->second);
+    cout << "jump " << label << endl;
 }
 
 void CLOns::push(const std::string &label) {
@@ -235,8 +237,20 @@ void CLOns::execute(const string &code) {
 }
 
 void CLOns::request(int& val) {
-    btnNum = std::promise<int>();
-    val = btnNum.get_future().get();
+    if (input.size()) {
+        auto num = input.begin();
+        val = *num;
+        input.erase(num);
+        cout << val << endl;
+    } else {
+        btnNum = std::promise<int>();
+        val = btnNum.get_future().get();
+    }
+    record.push_back(val);
+    for (auto it = record.begin(); it != record.end(); it++) {
+        cout << *it << ", ";
+    }
+    cout << endl;
 }
 
 void CLOns::response(int val) {

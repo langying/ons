@@ -13,7 +13,8 @@ using namespace std;
 CLWin::CLWin(CLOns* ons) {
     this->ons = ons;
 }
-
+void CLWin::br() {
+}
 void CLWin::csp(int id) {
     if (id < 0) {
         imgs.clear();
@@ -26,7 +27,18 @@ void CLWin::csp(int id) {
         }
     }
 }
-
+void CLWin::csp2(int id) {
+    if (id < 0) {
+        imgs.clear();
+        return;
+    }
+    for (auto it = imgs.begin(); it != imgs.end(); it++) {
+        if (id == it->second.id) {
+            imgs.erase(it);
+            break;
+        }
+    }
+}
 void CLWin::lsp(int id, string ss, int px, int py, int aa) {
     CLImg img;
     img.id = id;

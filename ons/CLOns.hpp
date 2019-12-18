@@ -39,10 +39,13 @@ public:
 
 private:
     CLLex *l;                           /// current lexer
+    std::vector<int>           record;  /// 每次跳转买点记录
     std::vector<int>           stacks;  /// 每次跳转买点记录
     std::vector<CLVar*>        scopes;  /// stack of scopes when parsing
     std::promise<int>          btnNum;  /// btnwait num
     std::map<std::string, int> labels;  /// Label Index In Script
+    
+    std::vector<int> input = {1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 2, 2, 1, 1, 2, 1, 1, 2, 3, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1};   /// 每次跳转买点记录
     
 #ifdef TINYJS_CALL_STACK
     std::vector<std::string> call_stack; /// Names of places called so we can show when erroring

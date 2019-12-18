@@ -26,6 +26,9 @@ void ons_automode_time(CLVar* func, void* data) {
     CLVar* val = func->getParameter("0");
     ((CLEngine*)data)->win->automode_time = val->getInt();
 }
+void ons_br(CLVar* func, void* data) {
+    ((CLEngine*)data)->win->br();
+}
 void ons_bg(CLVar* func, void* data) {
     CLVar* val = func->getParameter("0");
     ((CLEngine*)data)->win->bg = val->getString();
@@ -39,7 +42,7 @@ void ons_bgmstop(CLVar* func, void* data) {
     ((CLEngine*)data)->win->bgm.status = val->getInt();
 }
 void ons_btnwait(CLVar* func, void* data) {
-    std::cout << "btnwait: ";
+    std::cout << "btnwait>>>: ";
     int num = 0;
     ((CLEngine*)data)->ons->request(num);
     func->getParameter("0")->setInt(num);
@@ -55,8 +58,12 @@ void ons_csp(CLVar* func, void* data) {
     CLVar* val = func->getParameter("0");
     ((CLEngine*)data)->win->csp(val->getInt());
 }
+void ons_csp2(CLVar* func, void* data) {
+    CLVar* val = func->getParameter("0");
+    ((CLEngine*)data)->win->csp2(val->getInt());
+}
 void ons_click(CLVar* func, void* data) {
-    std::cout << "click: ";
+    std::cout << "click>>>: ";
     int num = 0;
     ((CLEngine*)data)->ons->request(num);
 }
@@ -216,6 +223,9 @@ void ons_print(CLVar* func, void* data) {
         ((CLEngine*)data)->print(anim, time);
     }
 }
+void ons_reset(CLVar* func, void* data) {
+    ((CLEngine*)data)->reset();
+}
 void ons_rmenu(CLVar* func, void* data) {
     CLWin* win = ((CLEngine*)data)->win;
     int argc = func->getParameter(ONS_ARGC)->getInt();
@@ -271,6 +281,33 @@ void ons_spbtn(CLVar* func, void* data) {
     int vv = func->getParameter("1")->getInt();
     ((CLEngine*)data)->win->spbtn(id, vv);
 }
+void ons_systemcall(CLVar* func, void* data) {
+    int argc = func->getParameter(ONS_ARGC)->getInt();
+    cout << "systemcall";
+    for (int i=0; i<argc; i++) {
+        cout << " " << func->getParameter(to_string(i))->getString();
+    }
+    cout << endl;
+//    CLEngine* engine = (CLEngine*)data;
+//    string cmd = func->getParameter("0")->getString();
+//    if (cmd == "end") {
+//        engine->end();
+//    } else if (cmd == "load") {
+//        engine->load();
+//    } else if (cmd == "save") {
+//        engine->save();
+//    } else if (cmd == "skip") {
+//        engine->skip();
+//    } else if (cmd == "reset") {
+//        engine->reset();
+//    } else if (cmd == "rmenu") {
+//        engine->rmenu();
+//    } else if (cmd == "automode") {
+//        engine->automode();
+//    } else if (cmd == "lookback") {
+//        engine->lookback();
+//    }
+}
 void ons_textoff(CLVar* func, void* data) {
     ((CLEngine*)data)->win->textoff();
 }
@@ -314,7 +351,10 @@ CLEngine::CLEngine() {
     ons = NULL;
     win = NULL;
 }
-
+void CLEngine::reset() {
+    ons->jump("*define");
+    cout << "game reset to *define" << endl;
+}
 void CLEngine::load(const char* _path) {
     this->path = _path;
     // !TODO: 检查加密文件
@@ -333,6 +373,7 @@ void CLEngine::load(const char* _path) {
     ons = new CLOns(code);
     ons->addFunction("automode",        ons_automode,           this);
     ons->addFunction("automode_time",   ons_automode_time,      this);
+    ons->addFunction("br",              ons_br,                 this);
     ons->addFunction("bg",              ons_bg,                 this);
     ons->addFunction("bgm",             ons_bgm,                this);
     ons->addFunction("bgmstop",         ons_bgmstop,            this);
@@ -340,6 +381,7 @@ void CLEngine::load(const char* _path) {
     ons->addFunction("btnwait2",        ons_btnwait2,           this);
     ons->addFunction("caption",         ons_caption,            this);
     ons->addFunction("csp",             ons_csp,                this);
+    ons->addFunction("csp2",            ons_csp2,               this);
     ons->addFunction("click",           ons_click,              this);
     ons->addFunction("dwave",           ons_dwave,              this);
     ons->addFunction("dwavestop",       ons_dwavestop,          this);
@@ -366,6 +408,7 @@ void CLEngine::load(const char* _path) {
     ons->addFunction("menuselectcolor", ons_menuselectcolor,    this);
     ons->addFunction("menusetwindow",   ons_menusetwindow,      this);
     ons->addFunction("print",           ons_print,              this);
+    ons->addFunction("reset",           ons_reset,              this);
     ons->addFunction("rmenu",           ons_rmenu,              this);
     ons->addFunction("rmode",           ons_rmode,              this);
     ons->addFunction("skip",            ons_skip,               this);
@@ -374,6 +417,7 @@ void CLEngine::load(const char* _path) {
     ons->addFunction("selectcolor",     ons_selectcolor,        this);
     ons->addFunction("setwindow",       ons_setwindow,          this);
     ons->addFunction("spbtn",           ons_spbtn,              this);
+    ons->addFunction("systemcall",      ons_systemcall,         this);
     ons->addFunction("textoff",         ons_textoff,            this);
     ons->addFunction("textgosub",       ons_textgosub,          this);
     ons->addFunction("transmode",       ons_transmode,          this);
@@ -381,8 +425,8 @@ void CLEngine::load(const char* _path) {
     ons->addFunction("versionstr",      ons_versionstr,         this);
     ons->addFunction("wait",            ons_wait,               this);
     ons->addFunction("windowback",      ons_windowback,         this);
-    ons->jump("*define");
     win = new CLWin(ons);
+    reset();
 }
 
 
