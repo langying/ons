@@ -14,82 +14,100 @@ CLNsa::~CLNsa() {
     if (fp) {
         fclose(fp);
     }
-    if (kTable) {
-        free((void*)kTable);
-    }
 }
 
-CLNsa::CLNsa(const string& path) {
+CLNsa::CLNsa(const uint8_t* kTable, const string& path) {
     this->fp = NULL;
     this->path = path;
-    this->kTable = NULL;
-    codec["GIF"] = NO_COMPRESSION;
-    codec["JPG"] = NO_COMPRESSION;
-    codec["NBZ"] = NBZ_COMPRESSION;
-    codec["SPB"] = SPB_COMPRESSION;
+    this->kTable = kTable;
 }
 
-
-void CLNsa::load(ONS_ARC offset) {
+void CLNsa::loadNSA() {
     fp = fopen(path.c_str(), "rb");
-    for (int i=0; i<offset; i++) {
-        readChar();
-    }
-    if (offset == ONS_NS2) {
-        long sttIdx = swapLong(readLong()) + offset;
-        while(true) {
-            unsigned char ch = kTable[fgetc(fp)];
-            if (ch != '"') {
-                break;
-            }
-            std::string name = "";
-            while ((ch=kTable[fgetc(fp)]) != '"') {
-                if ('a' <= ch && ch <= 'z') {
-                    ch += 'A' - 'a';
-                }
-                name+=ch;
-            }
-            long length = swapLong(readLong());
-            files[name] = FileInfo{sttIdx, length};
-            sttIdx += length;
+    long len = readShort();
+    long stt = readLong();
+    for (long i=0 ; i<len; i++) {
+        uint8_t ch;
+        string name;
+        while((ch = kTable[fgetc(fp)])) {
+            name+=ch;
         }
-    } else {
-        long count  = readShort();
-        long sttIdx = readLong() + offset;
-        for (long i=0 ; i<count; i++) {
-            unsigned char ch;
-            std::string name;
-            while((ch = kTable[fgetc(fp)])) {
-                if ('a' <= ch && ch <= 'z') {
-                    ch += 'A' - 'a';
-                }
-                name+=ch;
-            }
-
-            FileInfo info;
-            if (offset == ONS_NSA) {
-                info.type = readChar();
-                info.idx= readLong() + sttIdx;
-                info.len =readLong();
-                info.size = readLong();
-            } else {
-                info.type = NO_COMPRESSION;
-                info.idx= readLong() + sttIdx;
-                info.len = readLong();
-                info.size = info.len;
-            }
-         
-            if (info.type == NO_COMPRESSION) {
-                info.type = 0;
-            }
-            if (info.type == NBZ_COMPRESSION ||  info.type == SPB_COMPRESSION ){
-                info.size = 0;
-            }
-            files[name] = info;
+        transform(name.begin(), name.end(), name.begin(), ::tolower);
+        NsaItem item;
+        item.type = readChar();
+        item.stt  = readLong() + stt;
+        item.len  = readLong();
+        item.size = readLong();
+        if (item.type == NO_COMPRESSION) {
+            item.type = getType(name);
         }
+        if (item.type == NBZ_COMPRESSION ||  item.type == SPB_COMPRESSION) {
+            item.size = 0;
+        }
+        files[name] = item;
     }
 }
-
+void CLNsa::loadNS2() {
+    fp = fopen(path.c_str(), "rb");
+    readChar();
+    long stt = swapLong(readLong()) + 1;
+    while(true) {
+        uint8_t ch = kTable[fgetc(fp)];
+        if (ch != '"') {
+            break;
+        }
+        string name;
+        while ((ch=kTable[fgetc(fp)]) != '"') {
+            name += ch;
+        }
+        transform(name.begin(), name.end(), name.begin(), ::tolower);
+        
+        NsaItem item;
+        item.stt = stt;
+        item.len = swapLong(readLong());
+        item.size = item.len;
+        item.type = getType(name);
+        files[name] = item;
+        stt += item.len;
+    }
+}
+void CLNsa::loadNS3() {
+    fp = fopen(path.c_str(), "rb");
+    readChar();
+    readChar();
+    long stt = swapLong(readLong()) + 2;
+    while(true) {
+        uint8_t ch = kTable[fgetc(fp)];
+        if (ch != '"') {
+            break;
+        }
+        string name;
+        while ((ch=kTable[fgetc(fp)]) != '"') {
+            name += ch;
+        }
+        transform(name.begin(), name.end(), name.begin(), ::tolower);
+        NsaItem item;
+        item.stt = stt;
+        item.len = swapLong(readLong());
+        item.size = item.len;
+        item.type = getType(name);
+        files[name] = item;
+        stt += item.len;
+    }
+}
+void CLNsa::savePath(const string& name) {
+    for (auto one : files) {
+        size_t idx = one.first.find('\\');
+        string pathfile = name + "/" + one.first.substr(0, idx) + "-" + one.first.substr(idx+1);
+        int   size = 0;
+        void* data = 0;
+        getFile(one.first, data, size);
+        FILE* f = fopen(pathfile.c_str(), "w+");
+        fwrite(data, 1, size, f);
+        fclose(f);
+        free(data);
+    }
+}
 unsigned char CLNsa::readChar() {
     static unsigned char ret;
     fread(&ret, 1, 1, fp);
@@ -125,51 +143,32 @@ unsigned short CLNsa::swapShort(unsigned short ch) {
     return ((ch & 0xff00) >> 8) | ((ch & 0x00ff) << 8);
 }
 
-void CLNsa::makeKeyTable(const char* pathfile) {
-    if (!pathfile) {
+void CLNsa::getFile(string name, void* &data, int& size) {
+    transform(name.begin(), name.end(), name.begin(), ::tolower);
+    auto file = files.find(name);
+    if (file == files.end()) {
+        size = 0;
+        data = 0;
         return;
     }
-    FILE* fp = fopen(pathfile, "rb");
-    if (!fp){
-        fprintf(stderr, "createKeyTable: can't open EXE file %s\n", pathfile);
-        return;
-    }
-    
-    kTable = new unsigned char[256];
-    for (int i=0; i<256; i++) {
-        kTable[i] = i;
-    }
-    
-    unsigned char ring_buffer[256];
-    
-    int ring_start = 0;
-    int ring_last = 0;
-    int i, ch, count;
-    while((ch = fgetc(fp)) != EOF){
-        i = ring_start;
-        count = 0;
-        while (i != ring_last && ring_buffer[i] != ch ){
-            count++;
-            i = (i+1)%256;
-        }
-        if (i == ring_last && count == 255) {
-            break;
-        }
-        if (i != ring_last) {
-            ring_start = (i+1)%256;
-        }
-        ring_buffer[ring_last] = ch;
-        ring_last = (ring_last+1)%256;
-    }
-    fclose(fp);
+    auto info = file->second;
+    fseek(fp, info.stt, SEEK_SET);
+    size = (int)info.len;
+    data = malloc(size);
+    fread(data, 1, info.len, fp);
+}
 
-    if (ch == EOF) {
-        printf("createKeyTable: can't find a key table.");
-        exit(-1);
+int CLNsa::getType(const std::string& name) {
+    auto idx = name.find('.');
+    string ext = (idx == string::npos) ? name : name.substr(idx+1);
+    if (ext == "nbz") {
+        return NBZ_COMPRESSION;
+    } else if (ext == "spb") {
+        return SPB_COMPRESSION;
+    } else if (ext == "jpg") {
+        return NO_COMPRESSION;
+    } else if (ext == "jpg") {
+        return NO_COMPRESSION;
     }
-
-    ring_buffer[ring_last] = ch;
-    for (i=0 ; i<256 ; i++) {
-        kTable[ring_buffer[(ring_start+i)%256]] = i;
-    }
+    return NO_COMPRESSION;
 }

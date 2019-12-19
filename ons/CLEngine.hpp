@@ -41,9 +41,10 @@ public:
     CLEngine();
     
     void reset();
-    void load(const char* path);
-    void loadNsa(const std::string& name);
-    void loadTxt(const std::string& name, const std::string& text);
+    void load(const std::string& path);
+    void loadArc(ONS_ARC arc);
+    void loadTxt(const std::string& name);
+    void loadTab(const char* pathfile);
     void getPathFiles(std::vector<std::string>& list, const std::string& ext1, const std::string& ext2);
 
     void execute();
@@ -56,6 +57,7 @@ public:
 public:
     CLOns* ons;
     CLWin* win;
+    uint8_t kTable[256];
     std::string path;
     std::string code;
     std::vector<CLTxt> txts;

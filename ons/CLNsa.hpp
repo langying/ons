@@ -24,28 +24,31 @@ enum ONS_CODEC {
     NBZ_COMPRESSION  = 4
 };
 
-typedef struct _FileInfo {
-    long idx;  // 索引位置
+typedef struct _NsaInfo {
+    long stt;  // 索引位置
     long len;  // 实际文件长度
     long size; // 原始文件长度
     char type; // 文件压缩类型
-} FileInfo;
+} NsaItem;
 
 class CLNsa {
 public:
     ~CLNsa();
-    CLNsa(const std::string& path);
+    CLNsa(const uint8_t* kTable, const std::string& path);
     
-    void load(ONS_ARC offset);
-    void makeKeyTable(const char* pathfile);
+    void loadNSA();
+    void loadNS2();
+    void loadNS3();
+    void savePath(const std::string& name);
+    void getFile(std::string name, void* &data, int& size);
+    int  getType(const std::string& name);
     
-private:
-    unsigned char* kTable;
+public:
+    const uint8_t* kTable;
     
     FILE *fp;
     std::string path;
-    std::map<std::string, int> codec;
-    std::map<std::string, FileInfo> files;
+    std::map<std::string, NsaItem> files;
     
     unsigned char  readChar();
     unsigned long  readLong();

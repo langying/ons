@@ -206,12 +206,7 @@ void ons_menusetwindow(CLVar* func, void* data) {
     menu.bgColor        = func->getParameter("6")->getInt();
 }
 void ons_nsa(CLVar* func, void* data) {
-    CLEngine* engine = (CLEngine*)data;
-    vector<string> list;
-    engine->getPathFiles(list, ".nsa", ".NSA");
-    for (string& name : list) {
-        engine->loadNsa(name);
-    }
+    ((CLEngine*)data)->loadArc(ONS_NSA);
 }
 void ons_print(CLVar* func, void* data) {
     int argc = func->getParameter(ONS_ARGC)->getInt();
@@ -350,25 +345,22 @@ CLEngine::~CLEngine() {
 CLEngine::CLEngine() {
     ons = NULL;
     win = NULL;
+    for (int i=0; i<256; i++) {
+        kTable[i] = i;
+    }
 }
 void CLEngine::reset() {
     ons->jump("*define");
     cout << "game reset to *define" << endl;
 }
-void CLEngine::load(const char* _path) {
+void CLEngine::load(const string& _path) {
     this->path = _path;
-    // !TODO: 检查加密文件
-    
     vector<string> list;
     getPathFiles(list, ".txt", ".TXT");
     for (string& name : list) {
-        std::string pathfile = path + "/" + name;
-        std::ifstream file(pathfile);
-        std::istreambuf_iterator<char> begin(file);
-        std::istreambuf_iterator<char> end;
-        std::string text(begin, end);
-        loadTxt(name, text);
+        loadTxt(name);
     }
+    loadTab(NULL);// !TODO: 检查加密文件
     
     ons = new CLOns(code);
     ons->addFunction("automode",        ons_automode,           this);
@@ -428,12 +420,45 @@ void CLEngine::load(const char* _path) {
     win = new CLWin(ons);
     reset();
 }
-
-
-void CLEngine::loadNsa(const string& name) {
-    nsas[name] = new CLNsa(path + "/" + name);
+void CLEngine::loadArc(ONS_ARC arc) {
+    vector<string> list;
+    switch (arc) {
+        case ONS_NSA: {
+            getPathFiles(list, ".nsa", ".NSA");
+            for (string& name : list) {
+                CLNsa* nsa = new CLNsa(kTable, path + "/" + name);
+                nsa->loadNSA();
+                nsas[name] = nsa;
+            }
+            break;
+        }
+        case ONS_NS2: {
+            getPathFiles(list, ".ns2", ".NS2");
+            for (string& name : list) {
+                CLNsa* nsa = new CLNsa(kTable, path + "/" + name);
+                nsa->loadNS2();
+                nsas[name] = nsa;
+            }
+            break;
+        }
+        case ONS_NS3: {
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    for (auto it = nsas.begin(); it != nsas.end(); it++) {
+        it->second->savePath("/Users/hanqiong/Downloads/迅雷下载/ONS/ONS/data");
+    }
 }
-void CLEngine::loadTxt(const string& name, const string& text) {
+void CLEngine::loadTxt(const string& name) {
+    std::string pathfile = path + "/" + name;
+    std::ifstream file(pathfile);
+    std::istreambuf_iterator<char> begin(file);
+    std::istreambuf_iterator<char> end;
+    std::string text(begin, end);
+
     CLTxt txt(name, text);
     if (code.length()){
         code += '\n';
@@ -441,7 +466,49 @@ void CLEngine::loadTxt(const string& name, const string& text) {
     code += text;
     txts.push_back(txt);
 }
+void CLEngine::loadTab(const char* pathfile) {
+    if (!pathfile) {
+        return;
+    }
+    FILE* fp = fopen(pathfile, "rb");
+    if (!fp){
+        fprintf(stderr, "createKeyTable: can't open EXE file %s\n", pathfile);
+        return;
+    }
+    
+    unsigned char ring_buffer[256];
+    
+    int ring_start = 0;
+    int ring_last = 0;
+    int i, ch, count;
+    while((ch = fgetc(fp)) != EOF){
+        i = ring_start;
+        count = 0;
+        while (i != ring_last && ring_buffer[i] != ch ){
+            count++;
+            i = (i+1)%256;
+        }
+        if (i == ring_last && count == 255) {
+            break;
+        }
+        if (i != ring_last) {
+            ring_start = (i+1)%256;
+        }
+        ring_buffer[ring_last] = ch;
+        ring_last = (ring_last+1)%256;
+    }
+    fclose(fp);
 
+    if (ch == EOF) {
+        printf("createKeyTable: can't find a key table.");
+        exit(-1);
+    }
+
+    ring_buffer[ring_last] = ch;
+    for (i=0 ; i<256 ; i++) {
+        kTable[ring_buffer[(ring_start+i)%256]] = i;
+    }
+}
 void CLEngine::execute() {
     ons->execute();
 }
