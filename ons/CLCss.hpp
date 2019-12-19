@@ -16,8 +16,8 @@ public:
     CLSize font;
     CLSize size;
     CLPoint origin;
-    CLColor color1, color2, color3; // 高光，正常，低光
-    CLColor bgColor;
+    uint32_t color1, color2, color3; // 高光，正常，低光
+    uint32_t bgColor;
     bool bold;
     bool shadow;
     bool newline;

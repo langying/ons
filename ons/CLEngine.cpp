@@ -517,12 +517,21 @@ void CLEngine::response(int num) {
     ons->response(num);
 }
 
-void CLEngine::set(const std::string& key, const std::string& val) {
-    data[key]=val;
-}
-
 void CLEngine::print(int anim, int time) {
-    
+}
+CLData CLEngine::getData(const string &name) {
+    long  size = 0;
+    void* data = NULL;
+    for (auto nsa : nsas) {
+        auto item = nsa.second->files.find(name);
+        if (item != nsa.second->files.end()) {
+            nsa.second->getFile(name, &data, &size);
+            if (data) {
+                break;
+            }
+        }
+    }
+    return {size, data};
 }
 
 void CLEngine::getPathFiles(vector<string>& list, const string& ext1, const string& ext2) {

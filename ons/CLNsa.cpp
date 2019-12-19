@@ -99,9 +99,9 @@ void CLNsa::savePath(const string& name) {
     for (auto one : files) {
         size_t idx = one.first.find('\\');
         string pathfile = name + "/" + one.first.substr(0, idx) + "-" + one.first.substr(idx+1);
-        int   size = 0;
+        long  size = 0;
         void* data = 0;
-        getFile(one.first, data, size);
+        getFile(one.first, &data, &size);
         FILE* f = fopen(pathfile.c_str(), "w+");
         fwrite(data, 1, size, f);
         fclose(f);
@@ -143,19 +143,19 @@ unsigned short CLNsa::swapShort(unsigned short ch) {
     return ((ch & 0xff00) >> 8) | ((ch & 0x00ff) << 8);
 }
 
-void CLNsa::getFile(string name, void* &data, int& size) {
+void CLNsa::getFile(string name, void** data, long* size) {
     transform(name.begin(), name.end(), name.begin(), ::tolower);
     auto file = files.find(name);
     if (file == files.end()) {
-        size = 0;
-        data = 0;
+        *data = 0;
+        *size = 0;
         return;
     }
-    auto info = file->second;
-    fseek(fp, info.stt, SEEK_SET);
-    size = (int)info.len;
-    data = malloc(size);
-    fread(data, 1, info.len, fp);
+    NsaItem item = file->second;
+    fseek(fp, item.stt, SEEK_SET);
+    *size = item.len;
+    *data = malloc(item.len);
+    fread(*data, 1, item.len, fp);
 }
 
 int CLNsa::getType(const std::string& name) {

@@ -49,10 +49,10 @@ public:
 
     void execute();
     void response(int num);
-    void set(const std::string& key, const std::string& val);
     
 public:
     void print(int anim, int time);
+    CLData getData(const std::string& name);
     
 public:
     CLOns* ons;
@@ -65,7 +65,6 @@ public:
     
     std::map<int, CLImg> imgs;
     std::map<std::string, CLNsa*> nsas;
-    std::map<std::string, std::string> data;
 };
 
 #endif /* CLEngine_hpp */

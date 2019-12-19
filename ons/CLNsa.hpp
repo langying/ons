@@ -40,7 +40,7 @@ public:
     void loadNS2();
     void loadNS3();
     void savePath(const std::string& name);
-    void getFile(std::string name, void* &data, int& size);
+    void getFile(std::string name, void** data, long* size);
     int  getType(const std::string& name);
     
 public:
