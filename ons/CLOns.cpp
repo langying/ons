@@ -42,7 +42,7 @@ void ons_undefined(CLVar* func, void* data) {
     std::cout << ");\n";
 }
 void ons_dialog(string text, void* data) {
-//    std::cout << text << "\n";
+    std::cout << text << "\n";
 //    this_thread::sleep_for(chrono::milliseconds(100));
 }
 
@@ -173,7 +173,7 @@ void CLOns::back() {
     CLVar* thiz = scopes.back();
     delete thiz;
     scopes.pop_back();
-    cout << "return" << endl;
+//    cout << "return" << endl;
 }
 
 void CLOns::jump(const std::string &label) {
@@ -182,7 +182,7 @@ void CLOns::jump(const std::string &label) {
         throw new CLException("");
     }
     l->reset(it->second);
-    cout << "jump " << label << endl;
+//    cout << "jump " << label << endl;
 }
 
 void CLOns::push(const std::string &label) {

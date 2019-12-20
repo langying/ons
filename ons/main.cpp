@@ -11,7 +11,7 @@
 int main(int argc, const char * argv[]) {
     CLEngine engine;
     std::thread th([&engine](){
-        engine.load("/Users/hanqiong/Downloads/迅雷下载/ONS/ONS");
+        engine.load("/Users/hanqiong/Downloads/迅雷下载/ONS/秋之回忆2");
         engine.execute();
     });
     

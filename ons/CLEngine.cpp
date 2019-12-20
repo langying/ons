@@ -6,6 +6,7 @@
 //  Copyright © 2019 韩琼. All rights reserved.
 //
 
+#include <iconv.h>
 #include <dirent.h>
 
 #include "CLLex.hpp"
@@ -206,7 +207,7 @@ void ons_menusetwindow(CLVar* func, void* data) {
     menu.bgColor        = func->getParameter("6")->getInt();
 }
 void ons_nsa(CLVar* func, void* data) {
-    ((CLEngine*)data)->loadArc(ONS_NSA);
+    ((CLEngine*)data)->addArc(ONS_NSA);
 }
 void ons_print(CLVar* func, void* data) {
     int argc = func->getParameter(ONS_ARGC)->getInt();
@@ -355,12 +356,26 @@ void CLEngine::reset() {
 }
 void CLEngine::load(const string& _path) {
     this->path = _path;
-    vector<string> list;
-    getPathFiles(list, ".txt", ".TXT");
-    for (string& name : list) {
-        loadTxt(name);
+    addTab(NULL);// !TODO: 检查加密文件
+    if (isFile("nscript.dat")) {
+        addTxt("nscript.dat", "GBK", 1);
     }
-    loadTab(NULL);// !TODO: 检查加密文件
+    else if (isFile("pscript.dat")) {
+        addTxt("pscript.dat", "UTF8", 1);
+    }
+    else if (isFile("nscr_sec.dat")) {
+        addTxt("nscr_sec.dat", "GBK", 2);
+    }
+    else if (isFile("nscript.___")) {
+        addTxt("nscript.___", "GBK", 3);
+    }
+    else {
+        vector<string> list;
+        getPathFiles(list, ".txt", ".TXT");
+        for (string& name : list) {
+            addTxt(name, "GBK", 0);
+        }
+    }
     
     ons = new CLOns(code);
     ons->addFunction("automode",        ons_automode,           this);
@@ -420,7 +435,7 @@ void CLEngine::load(const string& _path) {
     win = new CLWin(ons);
     reset();
 }
-void CLEngine::loadArc(ONS_ARC arc) {
+void CLEngine::addArc(ONS_ARC arc) {
     vector<string> list;
     switch (arc) {
         case ONS_NSA: {
@@ -448,31 +463,18 @@ void CLEngine::loadArc(ONS_ARC arc) {
             break;
         }
     }
-    for (auto it = nsas.begin(); it != nsas.end(); it++) {
-        it->second->savePath("/Users/hanqiong/Downloads/迅雷下载/ONS/ONS/data");
-    }
+//    for (auto it = nsas.begin(); it != nsas.end(); it++) {
+//        it->second->savePath(path + "/data");
+//    }
 }
-void CLEngine::loadTxt(const string& name) {
-    std::string pathfile = path + "/" + name;
-    std::ifstream file(pathfile);
-    std::istreambuf_iterator<char> begin(file);
-    std::istreambuf_iterator<char> end;
-    std::string text(begin, end);
-
-    CLTxt txt(name, text);
-    if (code.length()){
-        code += '\n';
-    }
-    code += text;
-    txts.push_back(txt);
-}
-void CLEngine::loadTab(const char* pathfile) {
-    if (!pathfile) {
+void CLEngine::addTab(const string& name) {
+    if (name.length() <= 0) {
         return;
     }
-    FILE* fp = fopen(pathfile, "rb");
+    string pathfile = path + "/" + name;
+    FILE* fp = fopen(pathfile.c_str(), "rb");
     if (!fp){
-        fprintf(stderr, "createKeyTable: can't open EXE file %s\n", pathfile);
+        fprintf(stderr, "createKeyTable: can't open EXE file %s\n", pathfile.c_str());
         return;
     }
     
@@ -509,6 +511,57 @@ void CLEngine::loadTab(const char* pathfile) {
         kTable[ring_buffer[(ring_start+i)%256]] = i;
     }
 }
+void CLEngine::addTxt(const string& name, const string& charset, int mode) {
+    std::string pathfile = path + "/" + name;
+    std::ifstream file(pathfile);
+    std::istreambuf_iterator<char> begin(file);
+    std::istreambuf_iterator<char> end;
+    std::string text(begin, end);
+    
+    if (mode == 1) {
+        transform(text.begin(), text.end(), text.begin(), [](int ch) {
+            return ch ^ 0x84;
+        });
+    } else if (mode == 2) {
+        int idx = 0;
+        int mod[5] = {0x79, 0x57, 0x0d, 0x80, 0x04 };
+        transform(text.begin(), text.end(), text.begin(), [&idx, &mod](int ch) {
+            ch = (ch ^ mod[idx++]) & 0xff;
+            if (idx == 5) {
+                idx = 0;
+            }
+            return ch;
+        });
+    } else if (mode == 3) {
+        transform(text.begin(), text.end(), text.begin(), [this](int ch) {
+            return kTable[ch] ^ 0x84;
+        });
+    }
+    
+    if (charset != "UTF8") {
+        iconv_t cd = iconv_open("UTF8", charset.c_str());
+        if (cd) {
+            size_t srcLen = text.length();
+            char*  srcStr = (char*)text.c_str();
+            
+            size_t dstLen = text.length() * 3;
+            char*  dstStr = (char*)calloc(dstLen, 1);
+            char*  outStr = dstStr;
+            if (iconv(cd, &srcStr, &srcLen, &outStr, &dstLen) != -1) {
+                text = dstStr;
+            }
+            iconv_close(cd);
+            free(dstStr);
+        }
+    }
+
+    CLTxt txt(name, text);
+    if (code.length()){
+        code += '\n';
+    }
+    code += text;
+    txts.push_back(txt);
+}
 void CLEngine::execute() {
     ons->execute();
 }
@@ -533,7 +586,16 @@ CLData CLEngine::getData(const string &name) {
     }
     return {size, data};
 }
-
+bool CLEngine::isFile(const std::string &name) {
+    string file = path + "/" + name;
+    FILE* fp = fopen(file.c_str(), "rb");
+    if (fp) {
+        fclose(fp);
+        return true;
+    } else {
+        return false;
+    }
+}
 void CLEngine::getPathFiles(vector<string>& list, const string& ext1, const string& ext2) {
     DIR* dir;
     struct dirent *ptr;

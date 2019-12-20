@@ -42,9 +42,9 @@ public:
     
     void reset();
     void load(const std::string& path);
-    void loadArc(ONS_ARC arc);
-    void loadTxt(const std::string& name);
-    void loadTab(const char* pathfile);
+    void addArc(ONS_ARC arc);
+    void addTab(const std::string& name);
+    void addTxt(const std::string& name, const std::string& charset, int mode);
     void getPathFiles(std::vector<std::string>& list, const std::string& ext1, const std::string& ext2);
 
     void execute();
@@ -52,6 +52,7 @@ public:
     
 public:
     void print(int anim, int time);
+    bool isFile(const std::string& name);
     CLData getData(const std::string& name);
     
 public:
