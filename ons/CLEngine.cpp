@@ -356,7 +356,7 @@ void CLEngine::reset() {
 }
 void CLEngine::load(const string& _path) {
     this->path = _path;
-    addTab(NULL);// !TODO: 检查加密文件
+    addTab("");// !TODO: 检查加密文件
     if (isFile("nscript.dat")) {
         addTxt("nscript.dat", "GBK", 1);
     }

@@ -95,10 +95,13 @@ void CLNsa::loadNS3() {
         stt += item.len;
     }
 }
-void CLNsa::savePath(const string& name) {
+void CLNsa::savePath(const string& dir) {
     for (auto one : files) {
-        size_t idx = one.first.find('\\');
-        string pathfile = name + "/" + one.first.substr(0, idx) + "-" + one.first.substr(idx+1);
+        string name = one.first;
+        transform(name.begin(), name.end(), name.begin(), [](char ch) {
+            return (ch == '.' || isAlpha(ch)) ? ch : '-';
+        });
+        string pathfile = dir + "/" + name;
         long  size = 0;
         void* data = 0;
         getFile(one.first, &data, &size);
