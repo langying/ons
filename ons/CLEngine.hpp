@@ -44,7 +44,7 @@ public:
     void load(const std::string& path);
     void addArc(ONS_ARC arc);
     void addTab(const std::string& name);
-    void addTxt(const std::string& name, const std::string& charset, int mode);
+    void addTxt(const std::string& name, int mode);
     void getPathFiles(std::vector<std::string>& list, const std::string& ext1, const std::string& ext2);
 
     void execute();
@@ -61,6 +61,7 @@ public:
     uint8_t kTable[256];
     std::string path;
     std::string code;
+    std::string charset = "GBK";
     std::vector<CLTxt> txts;
     std::vector<std::string> stack;
     

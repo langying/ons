@@ -22,7 +22,7 @@ CLNsa::CLNsa(const uint8_t* kTable, const string& path) {
     this->kTable = kTable;
 }
 
-void CLNsa::loadNSA() {
+void CLNsa::loadNSA(const string& charset) {
     fp = fopen(path.c_str(), "rb");
     long len = readShort();
     long stt = readLong();
@@ -32,7 +32,11 @@ void CLNsa::loadNSA() {
         while((ch = kTable[fgetc(fp)])) {
             name+=ch;
         }
+        if (charset != ONS_UTF8) {
+            name = codecString(name, charset, ONS_UTF8);
+        }
         transform(name.begin(), name.end(), name.begin(), ::tolower);
+        
         NsaItem item;
         item.type = readChar();
         item.stt  = readLong() + stt;
@@ -47,7 +51,7 @@ void CLNsa::loadNSA() {
         files[name] = item;
     }
 }
-void CLNsa::loadNS2() {
+void CLNsa::loadNS2(const string& charset) {
     fp = fopen(path.c_str(), "rb");
     readChar();
     long stt = swapLong(readLong()) + 1;
@@ -60,6 +64,9 @@ void CLNsa::loadNS2() {
         while ((ch=kTable[fgetc(fp)]) != '"') {
             name += ch;
         }
+        if (charset != ONS_UTF8) {
+            name = codecString(name, charset, ONS_UTF8);
+        }
         transform(name.begin(), name.end(), name.begin(), ::tolower);
         
         NsaItem item;
@@ -71,7 +78,7 @@ void CLNsa::loadNS2() {
         stt += item.len;
     }
 }
-void CLNsa::loadNS3() {
+void CLNsa::loadNS3(const string& charset) {
     fp = fopen(path.c_str(), "rb");
     readChar();
     readChar();
@@ -85,7 +92,11 @@ void CLNsa::loadNS3() {
         while ((ch=kTable[fgetc(fp)]) != '"') {
             name += ch;
         }
+        if (charset != ONS_UTF8) {
+            name = codecString(name, charset, ONS_UTF8);
+        }
         transform(name.begin(), name.end(), name.begin(), ::tolower);
+        
         NsaItem item;
         item.stt = stt;
         item.len = swapLong(readLong());
@@ -99,7 +110,7 @@ void CLNsa::savePath(const string& dir) {
     for (auto one : files) {
         string name = one.first;
         transform(name.begin(), name.end(), name.begin(), [](char ch) {
-            return (ch == '.' || isAlpha(ch)) ? ch : '-';
+            return (ch == '/' || ch == '\\') ? '-' : ch;
         });
         string pathfile = dir + "/" + name;
         long  size = 0;

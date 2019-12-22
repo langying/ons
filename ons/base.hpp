@@ -28,6 +28,7 @@
 #define ONS_ARGC    "argc"
 #define ONS_DATA    ""
 #define ONS_NAME    ""
+#define ONS_UTF8    "UTF8"
 
 // If defined, this keeps a note of all calls and where from in memory. This is slower, but good for debugging
 #define TINYJS_CALL_STACK
@@ -197,7 +198,8 @@ bool isAlphaNum(const std::string &str);
 
 bool endWith(const std::string& str, const std::string& ext);
 void replace(std::string &str, char textFrom, const char *textTo);
-std::string getJSString(const std::string &str);
+std::string getJSString(const std::string& str);
+std::string codecString(const std::string& src, const std::string& srcCharset, const std::string& dstCharset);
 
 class CLVar;
 class CLException {

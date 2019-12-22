@@ -36,11 +36,12 @@ public:
     ~CLNsa();
     CLNsa(const uint8_t* kTable, const std::string& path);
     
-    void loadNSA();
-    void loadNS2();
-    void loadNS3();
+    void loadNSA(const std::string& charset);
+    void loadNS2(const std::string& charset);
+    void loadNS3(const std::string& charset);
     void savePath(const std::string& name);
     void getFile(std::string name, void** data, long* size);
+    
     int  getType(const std::string& name);
     
 public:

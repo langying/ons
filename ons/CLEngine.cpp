@@ -6,7 +6,6 @@
 //  Copyright © 2019 韩琼. All rights reserved.
 //
 
-#include <iconv.h>
 #include <dirent.h>
 
 #include "CLLex.hpp"
@@ -358,22 +357,23 @@ void CLEngine::load(const string& _path) {
     this->path = _path;
     addTab("");// !TODO: 检查加密文件
     if (isFile("nscript.dat")) {
-        addTxt("nscript.dat", "GBK", 1);
+        addTxt("nscript.dat", 1);
     }
     else if (isFile("pscript.dat")) {
-        addTxt("pscript.dat", "UTF8", 1);
+        charset = ONS_UTF8;
+        addTxt("pscript.dat", 1);
     }
     else if (isFile("nscr_sec.dat")) {
-        addTxt("nscr_sec.dat", "GBK", 2);
+        addTxt("nscr_sec.dat", 2);
     }
     else if (isFile("nscript.___")) {
-        addTxt("nscript.___", "GBK", 3);
+        addTxt("nscript.___", 3);
     }
     else {
         vector<string> list;
         getPathFiles(list, ".txt", ".TXT");
-        for (string& name : list) {
-            addTxt(name, "GBK", 0);
+        for (auto name : list) {
+            addTxt(name, 0);
         }
     }
     
@@ -442,7 +442,7 @@ void CLEngine::addArc(ONS_ARC arc) {
             getPathFiles(list, ".nsa", ".NSA");
             for (string& name : list) {
                 CLNsa* nsa = new CLNsa(kTable, path + "/" + name);
-                nsa->loadNSA();
+                nsa->loadNSA(charset);
                 nsas[name] = nsa;
             }
             break;
@@ -451,7 +451,7 @@ void CLEngine::addArc(ONS_ARC arc) {
             getPathFiles(list, ".ns2", ".NS2");
             for (string& name : list) {
                 CLNsa* nsa = new CLNsa(kTable, path + "/" + name);
-                nsa->loadNS2();
+                nsa->loadNS2(charset);
                 nsas[name] = nsa;
             }
             break;
@@ -463,9 +463,9 @@ void CLEngine::addArc(ONS_ARC arc) {
             break;
         }
     }
-//    for (auto it = nsas.begin(); it != nsas.end(); it++) {
-//        it->second->savePath(path + "/data");
-//    }
+    for (auto it = nsas.begin(); it != nsas.end(); it++) {
+        it->second->savePath(path + "/data");
+    }
 }
 void CLEngine::addTab(const string& name) {
     if (name.length() <= 0) {
@@ -511,7 +511,7 @@ void CLEngine::addTab(const string& name) {
         kTable[ring_buffer[(ring_start+i)%256]] = i;
     }
 }
-void CLEngine::addTxt(const string& name, const string& charset, int mode) {
+void CLEngine::addTxt(const string& name, int mode) {
     std::string pathfile = path + "/" + name;
     std::ifstream file(pathfile);
     std::istreambuf_iterator<char> begin(file);
@@ -537,24 +537,9 @@ void CLEngine::addTxt(const string& name, const string& charset, int mode) {
             return kTable[ch] ^ 0x84;
         });
     }
-    
-    if (charset != "UTF8") {
-        iconv_t cd = iconv_open("UTF8", charset.c_str());
-        if (cd) {
-            size_t srcLen = text.length();
-            char*  srcStr = (char*)text.c_str();
-            
-            size_t dstLen = text.length() * 3;
-            char*  dstStr = (char*)calloc(dstLen, 1);
-            char*  outStr = dstStr;
-            if (iconv(cd, &srcStr, &srcLen, &outStr, &dstLen) != -1) {
-                text = dstStr;
-            }
-            iconv_close(cd);
-            free(dstStr);
-        }
+    if (charset != ONS_UTF8) {
+        text = codecString(text, charset, ONS_UTF8);
     }
-
     CLTxt txt(name, text);
     if (code.length()){
         code += '\n';

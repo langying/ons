@@ -6,6 +6,7 @@
 //  Copyright © 2019 韩琼. All rights reserved.
 //
 
+#include <iconv.h>
 #include "base.hpp"
 
 using namespace std;
@@ -105,4 +106,30 @@ std::string getJSString(const std::string &str) {
       }
     }
     return "\"" + nStr + "\"";
+}
+std::string codecString(const std::string& src, const std::string& srcCharset, const std::string& dstCharset) {
+    if (srcCharset == dstCharset) {
+        return src;
+    }
+    iconv_t cd = iconv_open(dstCharset.c_str(), srcCharset.c_str());
+    if (cd) {
+        size_t srcLen = src.length();
+        char*  srcStr = (char*)src.c_str();
+        
+        size_t dstLen = src.length() * 3;
+        char*  dstStr = (char*)calloc(dstLen, 1);
+        char*  outStr = dstStr;
+        
+        std::string dst;
+        if (iconv(cd, &srcStr, &srcLen, &outStr, &dstLen) != -1) {
+            dst = dstStr;
+        } else {
+            dst = src;
+        }
+        free(dstStr);
+        iconv_close(cd);
+        return dst;
+    } else {
+        return src;
+    }
 }
