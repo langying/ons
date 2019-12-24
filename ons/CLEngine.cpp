@@ -196,14 +196,14 @@ void ons_menuselectcolor(CLVar* func, void* data) {
 //    menu.color3 = func->getParameter("2")->getInt(); // 低光
 }
 void ons_menusetwindow(CLVar* func, void* data) {
-//    CLCss& menu = ((CLEngine*)data)->win->menu;
-//    menu.font.width     = func->getParameter("0")->getInt();
-//    menu.font.height    = func->getParameter("1")->getInt();
-//    menu.origin.x       = func->getParameter("2")->getInt() + menu.font.width;
-//    menu.origin.y       = func->getParameter("3")->getInt() + menu.font.height;
-//    menu.bold           = func->getParameter("4")->getInt() ? true : false;
-//    menu.shadow         = func->getParameter("5")->getInt() ? true : false;
-//    menu.bgColor        = func->getParameter("6")->getInt();
+    int fh = func->getParameter("0")->getInt();
+    int fw = func->getParameter("1")->getInt();
+    int dx = func->getParameter("2")->getInt();
+    int dy = func->getParameter("3")->getInt();
+    int bb = func->getParameter("4")->getInt();
+    int hh = func->getParameter("5")->getInt();
+    int bg = func->getParameter("6")->getInt();
+    ((CLEngine*)data)->win->menusetwindow(fh, fw, dx, dy, bb, hh, bg);
 }
 void ons_nsa(CLVar* func, void* data) {
     ((CLEngine*)data)->addArc(ONS_NSA);

@@ -36,8 +36,6 @@ public:
     bool labellog;      // 标签跟踪记录
     bool windowback;    // 使立绘和文字属于同一蒙层
     
-    CLCss menu;
-    std::map<std::string, std::string> label;
     CLOgg bgm;    // 背景音乐
     CLOns* ons;
     
@@ -53,6 +51,8 @@ public:
     std::map<int, CLImg> imgs;
     std::map<int, CLOgg> oggs;
     std::map<int, CLEffect> effects;
+    std::map<std::string, std::string> menu;  // 右键菜单css
+    std::map<std::string, std::string> label; // 文本框css
 
     
 public:
@@ -71,6 +71,7 @@ public:
     void msp(int id, int dx, int dy, int da);
     void msp2(int id, int dx, int dy, int sx, int sy, int dr, int da);
     void mpegplay(int id, std::string mov);
+    void menusetwindow(int fh, int fw, int dx, int dy, int bb, int hh, int bg);
     void setwindow(int tl, int tt, int mc, int ml, int fh, int fw, int dx, int dy, int st, int bold, int shad, int bg, int wl, int wt, int wr, int wb);
     void setwindow(int tl, int tt, int mc, int ml, int fh, int fw, int dx, int dy, int st, int bold, int shad, const std::string& bg, int wl, int wt, int wr, int wb);
     void spbtn(int id, int val);

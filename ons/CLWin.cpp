@@ -91,7 +91,23 @@ void CLWin::msp2(int id, int dx, int dy, int sx, int sy, int dr, int da) {
 
 void CLWin::mpegplay(int id, std::string mov) {
 }
-
+/**
+ * fh: 文字区字体高度
+ * fw: 文字区字体宽度
+ * dx: 文字区字间距
+ * dy: 文字区行间距
+ * bb:  bold
+ * hh: 加粗
+ * bg: 窗体背景颜色
+*/
+void CLWin::menusetwindow(int fh, int fw, int dx, int dy, int bb, int hh, int bg) {
+    // fh hh
+    menu["font-size"     ] = to_string(fw) + ONS_HTML;
+    menu["letter-spacing"] = to_string(dx) + ONS_HTML;
+    menu["line-height"   ] = to_string(dy) + ONS_HTML;
+    menu["font-weight"   ] = bb ? "bold" : "normal";
+    menu["background"    ] = "#" + to_string(bg);
+}
 /**
  * tl : 文字区left
  * tt: 文字区top
@@ -104,7 +120,7 @@ void CLWin::mpegplay(int id, std::string mov) {
  * st: 文字区显示速度：毫秒
  * bold:  文字区是否粗体
  * shad: 文字区是否阴影
- * wc: 窗体背景颜色
+ * bg: 窗体背景颜色
  * wl: 窗体
  * wt: 窗体
  * wr: 窗体
@@ -120,7 +136,7 @@ void CLWin::setwindow(int tl, int tt, int mc, int ml, int fh, int fw, int dx, in
     label["background"      ] = "#" + to_string(bg);
     label["font-size"       ] = to_string(fw) + ONS_HTML;
     label["font-weight"     ] = bold ? "bold" : "normal";
-    label["letter-spacing"  ] = to_string(dy) + ONS_HTML;
+    label["letter-spacing"  ] = to_string(dx) + ONS_HTML;
     label["line-height"     ] = to_string(dy) + ONS_HTML;
     label["padding"         ] = to_string(wl-tl) + " 0 " + to_string(wt-tt) + " 0";
 }
