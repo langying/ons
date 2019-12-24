@@ -15,6 +15,15 @@ CLWin::CLWin(CLOns* ons) {
 }
 void CLWin::br() {
 }
+void CLWin::bg(int c) {
+    wind_css["background"] = "#" + to_string(c);
+}
+void CLWin::bgm(const string& ogg) {
+    _bgm.file = ogg;
+}
+void CLWin::bgmstop() {
+    _bgm.status = 0;
+}
 void CLWin::csp(int id) {
     if (id < 0) {
         imgs.clear();
@@ -51,11 +60,6 @@ void CLWin::lsp(int id, string ss, int px, int py, int aa) {
 
 void CLWin::lsp2(int id, string ss, int px, int py, int sx, int sy, int rr, int aa) {
 }
-
-void CLWin::bgmstop() {
-    bgm.status = 0;
-}
-
 void CLWin::dwave(CLOgg& ogg) {
     oggs[ogg.id] = ogg;
 }
@@ -102,11 +106,11 @@ void CLWin::mpegplay(int id, std::string mov) {
 */
 void CLWin::menusetwindow(int fh, int fw, int dx, int dy, int bb, int hh, int bg) {
     // fh hh
-    menu["font-size"     ] = to_string(fw) + ONS_HTML;
-    menu["letter-spacing"] = to_string(dx) + ONS_HTML;
-    menu["line-height"   ] = to_string(dy) + ONS_HTML;
-    menu["font-weight"   ] = bb ? "bold" : "normal";
-    menu["background"    ] = "#" + to_string(bg);
+    menu_css["font-size"     ] = to_string(fw) + ONS_HTML;
+    menu_css["letter-spacing"] = to_string(dx) + ONS_HTML;
+    menu_css["line-height"   ] = to_string(dy) + ONS_HTML;
+    menu_css["font-weight"   ] = bb ? "bold" : "normal";
+    menu_css["background"    ] = "#" + to_string(bg);
 }
 /**
  * tl : 文字区left
@@ -129,20 +133,20 @@ void CLWin::menusetwindow(int fh, int fw, int dx, int dy, int bb, int hh, int bg
 void CLWin::setwindow(int tl, int tt, int mc, int ml, int fh, int fw, int dx, int dy, int st, int bold, int shad, int bg, int wl, int wt, int wr, int wb) {
     // fh shadow
     speed = st;
-    label["top"     ] = to_string(wt) + ONS_HTML;
-    label["left"    ] = to_string(wl) + ONS_HTML;
-    label["width"   ] = to_string(wr - wl) + ONS_HTML;
-    label["height"  ] = to_string(wb - wt) + ONS_HTML;
-    label["background"      ] = "#" + to_string(bg);
-    label["font-size"       ] = to_string(fw) + ONS_HTML;
-    label["font-weight"     ] = bold ? "bold" : "normal";
-    label["letter-spacing"  ] = to_string(dx) + ONS_HTML;
-    label["line-height"     ] = to_string(dy) + ONS_HTML;
-    label["padding"         ] = to_string(wl-tl) + " 0 " + to_string(wt-tt) + " 0";
+    label_css["top"     ] = to_string(wt) + ONS_HTML;
+    label_css["left"    ] = to_string(wl) + ONS_HTML;
+    label_css["width"   ] = to_string(wr - wl) + ONS_HTML;
+    label_css["height"  ] = to_string(wb - wt) + ONS_HTML;
+    label_css["background"      ] = "#" + to_string(bg);
+    label_css["font-size"       ] = to_string(fw) + ONS_HTML;
+    label_css["font-weight"     ] = bold ? "bold" : "normal";
+    label_css["letter-spacing"  ] = to_string(dx) + ONS_HTML;
+    label_css["line-height"     ] = to_string(dy) + ONS_HTML;
+    label_css["padding"         ] = to_string(wl-tl) + " 0 " + to_string(wt-tt) + " 0";
 }
 void CLWin::setwindow(int tl, int tt, int mc, int ml, int fh, int fw, int dx, int dy, int st, int bold, int shad, const string& bg, int wl, int wt, int wr, int wb) {
     setwindow(tl, tt, mc, ml, fh, fw, dx, dy, st, bold, shad, 0, wl, wt, wr, wb);
-    label["background"] = "url(" + bg + ")";
+    label_css["background"] = "url(" + bg + ")";
 }
 void CLWin::spbtn(int id, int val) {
     imgs[id].v = val;

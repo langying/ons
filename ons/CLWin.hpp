@@ -36,10 +36,9 @@ public:
     bool labellog;      // 标签跟踪记录
     bool windowback;    // 使立绘和文字属于同一蒙层
     
-    CLOgg bgm;    // 背景音乐
+    CLOgg _bgm;    // 背景音乐
     CLOns* ons;
     
-    std::string bg;     // 背景图片
     std::string kidoku; // 初次阅读，禁止跳过
     std::string caption;
     std::string textgosub;
@@ -51,18 +50,21 @@ public:
     std::map<int, CLImg> imgs;
     std::map<int, CLOgg> oggs;
     std::map<int, CLEffect> effects;
-    std::map<std::string, std::string> menu;  // 右键菜单css
-    std::map<std::string, std::string> label; // 文本框css
+    std::map<std::string, std::string> wind_css;
+    std::map<std::string, std::string> menu_css;  // 右键菜单css
+    std::map<std::string, std::string> label_css; // 文本框css
 
     
 public:
     CLWin(CLOns* ons);
     void br();
+    void bg(int c);
+    void bgm(const std::string& ogg);
+    void bgmstop();
     void csp(int id);
     void csp2(int id);
     void lsp(int id, std::string ss, int px, int py, int aa);
     void lsp2(int id, std::string ss, int px, int py, int sx, int sy, int rr, int aa);
-    void bgmstop();
     void dwave(CLOgg& ogg);
     void dwavestop(int id);
     void dwaveloop(CLOgg& ogg);

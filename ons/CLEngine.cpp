@@ -31,15 +31,14 @@ void ons_br(CLVar* func, void* data) {
 }
 void ons_bg(CLVar* func, void* data) {
     CLVar* val = func->getParameter("0");
-    ((CLEngine*)data)->win->bg = val->getString();
+    ((CLEngine*)data)->win->bg(val->getInt());
 }
 void ons_bgm(CLVar* func, void* data) {
     CLVar* val = func->getParameter("0");
-    ((CLEngine*)data)->win->bgm.file = val->getString();
+    ((CLEngine*)data)->win->bgm(val->getString());
 }
 void ons_bgmstop(CLVar* func, void* data) {
-    CLVar* val = func->getParameter("0");
-    ((CLEngine*)data)->win->bgm.status = val->getInt();
+    ((CLEngine*)data)->win->bgmstop();
 }
 void ons_btnwait(CLVar* func, void* data) {
     std::cout << "btnwait>>>: ";
