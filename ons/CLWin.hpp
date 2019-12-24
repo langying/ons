@@ -23,6 +23,7 @@ typedef struct _CLEffect {
 class CLWin {
 public:
     int rmode; // 0右键点击无效，1右键点击有效
+    int speed; // 每个字显示时间
     int humanz; // 人物立绘的z-order
     int savenumber;
     int effectblank;
@@ -36,7 +37,7 @@ public:
     bool windowback;    // 使立绘和文字属于同一蒙层
     
     CLCss menu;
-    CLCss label;
+    std::map<std::string, std::string> label;
     CLOgg bgm;    // 背景音乐
     CLOns* ons;
     
@@ -70,23 +71,8 @@ public:
     void msp(int id, int dx, int dy, int da);
     void msp2(int id, int dx, int dy, int sx, int sy, int dr, int da);
     void mpegplay(int id, std::string mov);
-    // 170  文字开始显示的坐标x
-    // 310  文字开始显示的坐标y
-    // 30  每行显示的文字数目（全角）
-    // 10  最大行数
-    // 15  字体长
-    // 15        字体宽
-    // 0        字间距
-    // 0        行间距
-    // 1        单个字显示的毫秒数
-    // 0        是否为粗体
-    // 1        是否为阴影
-    // #ffffff   窗体颜色 （可以吧#ffffff替换成图片，例如”win.png”,包括半角引号）
-    // 170   窗体的左上x坐标
-    // 200   左上y坐标
-    // 640   右下x坐标
-    // 450   右下y坐标
-    void setwindow(int sx, int sy, int lw, int ln, int wh, int ww, int ws, int ls, int wt, int bold, int shad, int bgc, int lx, int ly, int rx, int ry);
+    void setwindow(int tl, int tt, int mc, int ml, int fh, int fw, int dx, int dy, int st, int bold, int shad, int bg, int wl, int wt, int wr, int wb);
+    void setwindow(int tl, int tt, int mc, int ml, int fh, int fw, int dx, int dy, int st, int bold, int shad, const std::string& bg, int wl, int wt, int wr, int wb);
     void spbtn(int id, int val);
     void textoff();
 };

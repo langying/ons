@@ -190,20 +190,20 @@ void ons_mpegplay(CLVar* func, void* data) {
     ((CLEngine*)data)->win->mpegplay(id, mv);
 }
 void ons_menuselectcolor(CLVar* func, void* data) {
-    CLCss& menu = ((CLEngine*)data)->win->menu;
-    menu.color1 = func->getParameter("0")->getInt(); // 正常
-    menu.color2 = func->getParameter("1")->getInt(); // 高光
-    menu.color3 = func->getParameter("2")->getInt(); // 低光
+//    CLCss& menu = ((CLEngine*)data)->win->menu;
+//    menu.color1 = func->getParameter("0")->getInt(); // 正常
+//    menu.color2 = func->getParameter("1")->getInt(); // 高光
+//    menu.color3 = func->getParameter("2")->getInt(); // 低光
 }
 void ons_menusetwindow(CLVar* func, void* data) {
-    CLCss& menu = ((CLEngine*)data)->win->menu;
-    menu.font.width     = func->getParameter("0")->getInt();
-    menu.font.height    = func->getParameter("1")->getInt();
-    menu.origin.x       = func->getParameter("2")->getInt() + menu.font.width;
-    menu.origin.y       = func->getParameter("3")->getInt() + menu.font.height;
-    menu.bold           = func->getParameter("4")->getInt() ? true : false;
-    menu.shadow         = func->getParameter("5")->getInt() ? true : false;
-    menu.bgColor        = func->getParameter("6")->getInt();
+//    CLCss& menu = ((CLEngine*)data)->win->menu;
+//    menu.font.width     = func->getParameter("0")->getInt();
+//    menu.font.height    = func->getParameter("1")->getInt();
+//    menu.origin.x       = func->getParameter("2")->getInt() + menu.font.width;
+//    menu.origin.y       = func->getParameter("3")->getInt() + menu.font.height;
+//    menu.bold           = func->getParameter("4")->getInt() ? true : false;
+//    menu.shadow         = func->getParameter("5")->getInt() ? true : false;
+//    menu.bgColor        = func->getParameter("6")->getInt();
 }
 void ons_nsa(CLVar* func, void* data) {
     ((CLEngine*)data)->addArc(ONS_NSA);
@@ -248,9 +248,9 @@ void ons_savenumber(CLVar* func, void* data) {
     ((CLEngine*)data)->win->savenumber = val->getInt();
 }
 void ons_selectcolor(CLVar* func, void* data) {
-    CLCss& label = ((CLEngine*)data)->win->label;
-    label.color1 = func->getParameter("0")->getInt();
-    label.color2 = func->getParameter("1")->getInt();
+//    CLCss& label = ((CLEngine*)data)->win->label;
+//    label.color1 = func->getParameter("0")->getInt();
+//    label.color2 = func->getParameter("1")->getInt();
 }
 void ons_setwindow(CLVar* func, void* data) {
     int a = func->getParameter("0")->getInt();
@@ -264,12 +264,17 @@ void ons_setwindow(CLVar* func, void* data) {
     int i = func->getParameter("8")->getInt();
     int j = func->getParameter("9")->getInt();
     int k = func->getParameter("10")->getInt();
-    int l = func->getParameter("11")->getInt();
     int m = func->getParameter("12")->getInt();
     int n = func->getParameter("13")->getInt();
     int o = func->getParameter("14")->getInt();
     int p = func->getParameter("15")->getInt();
-    ((CLEngine*)data)->win->setwindow(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p);
+    if (func->getParameter("11")->isInt()) {
+        int l = func->getParameter("11")->getInt();
+        ((CLEngine*)data)->win->setwindow(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p);
+    } else {
+        std::string l = func->getParameter("11")->getString();
+        ((CLEngine*)data)->win->setwindow(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p);
+    }
 }
 void ons_spbtn(CLVar* func, void* data) {
     int id = func->getParameter("0")->getInt();

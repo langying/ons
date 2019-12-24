@@ -13,15 +13,25 @@
 
 class CLCss {
 public:
-    CLSize font;
-    CLSize size;
-    CLPoint origin;
-    uint32_t color1, color2, color3; // 高光，正常，低光
-    uint32_t bgColor;
-    bool bold;
-    bool shadow;
-    bool newline;
+    int top;
+    int left;
+    int width;
+    int height;
     bool transparent;
+    CLColor color; // 字体颜色
+    CLColor backgroud_color;
+    std::string background;
+    std::string border;
+    std::string display;
+    std::string font_size;
+    std::string font_style;
+    std::string font_family;
+    std::string font_weight;
+    std::string line_height; // 行间距
+    std::string margin;
+    std::string padding;
+    std::string position = "relative"; // absolute relative fixed static inherit
+    std::string text_align;
 };
 
 #endif /* CLCss_hpp */

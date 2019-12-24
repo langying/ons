@@ -29,6 +29,7 @@
 #define ONS_DATA    ""
 #define ONS_NAME    ""
 #define ONS_UTF8    "UTF8"
+#define ONS_HTML    "px";
 
 // If defined, this keeps a note of all calls and where from in memory. This is slower, but good for debugging
 #define TINYJS_CALL_STACK
@@ -218,6 +219,17 @@ typedef struct _CLPoint {
 typedef struct _CLSize {
     int width, height;
 } CLSize;
+typedef union _CLColor {
+    uint32_t  hex;
+    uint8_t   data[4];
+    struct {
+#if __BYTE_ORDER == __BIG_ENDIAN
+        uint8_t a, b, g, r;
+#else
+        uint8_t r, g, b, a;
+#endif
+    } rgba;
+} CLColor;
 
 typedef void (*CLCallback)(CLVar* func, void* data);
 
