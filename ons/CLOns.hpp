@@ -30,9 +30,9 @@ public:
     std::string evaluate(const std::string &code);
     CLVarLink   evaluateComplex(const std::string &code);
     
-    CLVar*              getVar(const std::string &path);
-    const std::string*  getVariable(const std::string &path);
-    bool                setVariable(const std::string &path, const std::string &data);
+    CLVar*      getVar(const std::string &path);
+    std::string getVariable(const std::string &path);
+    void        setVariable(const std::string &path, const std::string &data);
 
 public:
     CLVar *root;
@@ -45,7 +45,7 @@ private:
     std::promise<int>          btnNum;  /// btnwait num
     std::map<std::string, int> labels;  /// Label Index In Script
     
-    std::vector<int> input = {1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 2, 2, 1, 1, 2, 1, 1, 2, 3, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1};   /// 每次跳转买点记录
+    std::vector<int> input = {1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 2, 1, 2}; // = {1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 2, 2, 1, 1, 2, 1, 1, 2, 3, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1};   /// 每次跳转买点记录
     
 #ifdef TINYJS_CALL_STACK
     std::vector<std::string> call_stack; /// Names of places called so we can show when erroring

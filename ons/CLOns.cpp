@@ -335,30 +335,25 @@ CLVar *CLOns::getVar(const string &path) {
     return var;
 }
 
-const string *CLOns::getVariable(const string &path) {
+string CLOns::getVariable(const string &path) {
     CLVar *var = getVar(path);
     if (var) {
-        return &var->getString();
+        return var->getString();
     } else {
-        return NULL;
+        return "NaN";
     }
 }
 
-bool CLOns::setVariable(const std::string &path, const std::string &text) {
-    CLVar *var = getVar(path);
-    if (var) {
-        if (var->isInt()) {
-            var->setInt((int)strtol(text.c_str(),0,0));
-        } else if (var->isDouble()) {
-            var->setDouble(strtod(text.c_str(),0));
-        } else {
-            var->setString(text.c_str());
-        }
-        return true;
+void CLOns::setVariable(const std::string &path, const std::string &data) {
+    CLVarLink* lns = root->findChildOrCreateByPath(path);
+    if (lns->var->isInt()) {
+        lns->var->setInt((int)strtol(data.c_str(),0,0));
+    } else if (lns->var->isDouble()) {
+        lns->var->setDouble(strtod(data.c_str(),0));
+    } else {
+        lns->var->setString(data.c_str());
     }
-    else {
-        return false;
-    }
+    CLEAN(lns);
 }
 
 void CLOns::block(bool &execute) {
